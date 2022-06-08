@@ -36,7 +36,7 @@
   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd" /></svg>
 					  		</div>
 				  		</div>
-				  		<div class="message relative">{{message.texte}} <div class="progress-play"></div></div>
+				  		<div class="message relative"><a :href="'/?id_message=' + message.id_message">{{message.texte}}</a> <div class="progress-play"></div></div>
 				  		<div class="duration">loading...{{loadSound('/upload/message_' + message.id_message + '.webm','S_' + indexMessage, indexMessage)}}</div>
 				  		
 			  		</div>

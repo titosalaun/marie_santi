@@ -76,15 +76,21 @@ export function main(_p5) {
 	      let nextEl = stringArray[indexPosition]
 		  p5.stroke(textColor)
 	      p5.strokeWeight(2)
+	      
+	      if (micLevel == 'undefined') micLevel = 0;
+	  if (micLevel == '') micLevel = 0;
 	       
 	       
 	      p5.line(element.x , element.y, element.x + point_x , element.y + point_y )
 	      
 	
-	      /*if(point_x_direction === true) {
+	      if(point_x_direction === true) {
+		      
 	        point_x += p5.cos(1)/10000 * micLevel *100 + p5.cos(1)/10000;
+	        console.log("avant : " + point_x)
 	      } else {
 	        point_x -= p5.cos(1)/10000 * micLevel *100 + p5.cos(1)/10000 ;
+	        console.log("apres : " + point_x)
 	      }
 	      
 	      if (point_x > point_x_max) {
@@ -105,7 +111,7 @@ export function main(_p5) {
 	      } else if(point_y < point_y_min) {
 	        point_y_direction = true;
 	
-	      }*/
+	      }
 	      
 	    }
 	  )

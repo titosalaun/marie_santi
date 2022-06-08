@@ -25,8 +25,8 @@ export function main(_p5) {
 
    p5.preload = _ => {
     font = p5.loadFont("UniversalSansDisplayTrial491-Regular.otf");
-	  fontSize = 50;
-	  string="je m'appelle tito"
+	  fontSize = 100;
+	  string=""
 	   p5.noLoop();
   }
   
@@ -40,7 +40,7 @@ export function main(_p5) {
 	  p5.textSize(fontSize);
 	  
 	  
-	stringArray = font.textToPoints(string,0, 50, fontSize, textToPointsOptions)
+	stringArray = font.textToPoints(string,0, 100, fontSize, textToPointsOptions)
 	  ///console.log("stringArray : " + stringArray)
   }
 
@@ -51,6 +51,7 @@ export function main(_p5) {
 	  
 
 	  if (micLevel == 'undefined') micLevel = 0;
+	  if (micLevel == '') micLevel = 0;
 	  //console.log("micLevel : " + micLevel)
 	  stringArray.forEach(
 	    (element, indexPosition) =>{

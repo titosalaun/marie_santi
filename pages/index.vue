@@ -14,6 +14,14 @@
 					  	<textarea  ref="titot" placeholder="..." v-model="tools_message" name="tools_message" id="tools_message"></textarea>
 				  	</div>
 				  	<div>
+					  	<label>Effets</label>
+					  	<select v-model="id_effet" name="id_effet" id="id_effet" @change="selectEffet">
+							<option value="1"> MS1</option>
+							<option value="2"> MS2</option>
+							<option value="3"> MS3</option>
+						</select>
+				  	</div>
+				  	<div>
 					  	<label>Couleur</label>
 					  	<div class="zoneColorText"><color-picker v-model="tools_color_text" @change="updateColorText"></color-picker></div>
 				  	</div>
@@ -35,15 +43,19 @@
 		  	</div>
 		  </div>
 		  
-		  <div class="col-content" v-bind:class="{ marge: isTools }">
+		  <div class="col-content" @click="initEspace()" v-bind:class="{ marge: isTools }">
 		  	<div class="mesure">
 			  	<div>
-				  	<div><div class="mesure-val">{{mesureVal}}</div><div @click="testTito" class="indice">DBA</div></div>
+				  	<div><div class="mesure-val">{{mesureVal}}</div><div class="indice">DBA</div></div>
 				  	<div v-show="isRecord" class="mesure-temps">Durée : {{mesureTps}}</div>
 			  	</div>
-			  	<div v-show="displayRecord">
-				  	<div><button class="btRecord" @click="beforeRecording"  @mouseover="recordOver = true" @mouseleave="recordOver = false" v-bind:class="{ 'animate-onWait': !recordOver }">record</button>
+			  	<div>
+				  	<div v-show="displayRecord"><button class="btRecord" @click="beforeRecording"  @mouseover="recordOver = true" @mouseleave="recordOver = false" v-bind:class="{ 'animate-onWait': !recordOver }">record</button>
 					  					  	<div class="pt-3 text-sm">{{displayActiveSound}}</div>
+
+				  	</div>
+				  	
+				  	<div v-show="id_message != 0"><button class="btRecord btPlay" @click="playMessage">play</button>
 
 				  	</div>
 				  </div>
@@ -52,7 +64,7 @@
 		  	<div class="col-content-list">
 			  		<div class="item" style="display:block">
 				  		<div @click="clickEdit"  @input="clickEdit" ref="editItem" class="editItem" contenteditable>{{messageInit}}</div>
-				  		<div id="p5Canvas" class="canvas-area"></div>
+				  		<div style="display:block;width: 100%;height:auto" id="p5Canvas" class="canvas-area hidden"></div>
 			  		</div>
 		  	</div>
 		  			  	
@@ -145,12 +157,29 @@ import { mapGetters } from 'vuex';
 import axios from 'axios';
 import * as Tone from 'tone';
 import moment from 'moment';
+
+if (process.browser) {
+  var effet_1 = require('~/assets/js/ms1.js')
+  var effet_2 = require('~/assets/js/ms2.js')
+  var effet_3 = require('~/assets/js/ms3.js')
+}
+
 var P5;
+var P5Sound;
 var playerSound;
 export default {
 	middleware: 'auth',
    computed: {
     ...mapGetters(['isAuthenticated', 'loggedInfont']),
+  }
+  ,
+  created() {	 
+	 if (typeof this.$route.query.id_message === 'undefined') {
+		 this.id_message = 0;
+	 }
+	 else  this.id_message = parseInt(this.$route.query.id_message);
+	 	 	
+	 	 console.log("ID : " + this.id_message)
   }
   ,
 	data() {
@@ -180,6 +209,7 @@ export default {
 			intervalDisplayMic:'',
 			micFFT:'',
 			isDeviceInitialize:false,
+			
 			message:'',
 			messageInit:'Votre texte...',
 			id_source:1,
@@ -195,6 +225,8 @@ export default {
 			isPlayer:false,
 			mesureTps:0,
 			id_message:0,
+			Fmessage:'',
+			message_son:'',
 			resultSound:'',
 			fileSound:'',
 			isNewMessage:true,
@@ -208,10 +240,13 @@ export default {
 			isShowNoResultSound:false,
 			displayActiveSound:'',
 			isPlayP5:false,
-			
+			radar:'',
+			id_effet:1,
+			isPlaying:false,
+			modeRecording:1,
 	    }
 	  }
-  ,
+	,
 	mounted() {   
 
 	 this.parametres = JSON.parse(localStorage.getItem('parametres') || "[]") ;
@@ -221,83 +256,103 @@ export default {
 	 this.initDisplayErreur();
 	 this.getSounds();
 	 
-	 this.script = function (p5) {    
-	  var speed = 2;    
-	  var posX = 0;
-	  let font;
-	  let points;
-	  let bounds;
-	  var para = 200;
-	  let string;
-	  let stringArray;
-	  let micLevel = 50
-	  let fontSize = 50;
-	  let titoP5 = 10;
-	  let textToPointsOptions = {
-		  sampleFactor : 0.35,
-		
-		  simplifyThreshold:0
-		}
-	  // NOTE: Set up is here  
-	  p5.preload = _ => {      
-	   font = p5.loadFont('UniversalSansDisplayTrial491-Regular.otf');    
-	  }   
-	  p5.setup = _ => {      
-	   var canvas = p5.createCanvas(p5.displayWidth, p5.displayHeight);   
-	   canvas.parent("p5Canvas");  
-	   string = "je m'aaappelle ainsi";
-	   p5.textFont(font);
-	   p5.textSize(50); 
-	   
-	   stringArray = font.textToPoints(string,p5.width/2 - p5.textWidth(), p5.height/2, fontSize, p5.textToPointsOptions)
-
-  
-	  }     
-	  // NOTE: Draw is here
-	  p5.draw = _ => {     
-		  console.log("isdraw: " + micLevel)
-		  //if (p5.isPlayP5) {
-			  p5.background(250);
-			  stringArray.forEach(
-			    (element, indexPosition) =>{
-			
-			      p5.line(element.x, element.y, element.x+p5.micLevel*250, element.y)
-			      p5.line(element.x, element.y, element.x-p5.micLevel*250, element.y)
-			      p5.line(element.x, element.y, element.x, element.y+p5.micLevel*250)
-			      p5.line(element.x, element.y, element.x, element.y-p5.micLevel*250)
-			
-			
-			
-			    }
-			  )
-
-		//}
-	   
-	  }  
-	 }   
-	 // NOTE: Use p5 as an instance mode
-	 //const P5 = require('p5');
-	 //this.tito = new P5(script)
-	 
 	 P5 = require('p5')
-    
-    
-    //this.ps.isPlayP5 = false;
-    
+	 
+	 if (this.id_message != 0) {
+		 this.messageInit ='loading...';
+		 this.getMessage();
+	 }
+	 //P5Sound = require('p5/lib/addons/p5.sound');
+     
+    //radar.setLoop();
+	 
+	 
+    this.selectEffet();
 
 	},
 	methods: {
-		testTito: function()
+		getMessage: function()
+		 {
+	       axios.get(this.url_server + "/getMessage?id_message=" + this.id_message)
+	       .then(response => {
+		       this.Fmessage = response.data.liste;
+			   if (typeof this.Fmessage.texte !== 'undefined') {
+				   this.id_effet = this.Fmessage.id_effet;
+				   this.tools_font_size = this.Fmessage.font_size;
+			       this.messageInit = this.Fmessage.texte;
+			       this.message = this.messageInit;
+			       this.message_son = '/upload/message_' + this.id_message + '.webm';
+			
+			    }
+		   })
+	       .catch(error => {
+		       this.id_message = 0;
+			   displayErreur("erreur de chargement du message")
+	      })
+	    },
+		initEspace: function()
 		{
+			if (this.isTools) {
+			    this.isTools = false;
+		    }
+		}
+		,
+		callbackOnP5: function(timeStr) {
+	      this.mesureVal = timeStr;
+	    }
+	    ,
+		startP5: function() {
+			this.radar.startLoopP5();
+		},
+		stopP5: function() {
+			this.radar.stopLoopP5();
+		},
+		startEffect: function()
+		{
+			console.log("testTito")
 			if (this.isPlayP5) {
+				/*this.isPlayP5 = false;
+				this.ps = null;
+				delete this.ps;*/
+				this.stopP5();
 				this.isPlayP5 = false;
+				
+				document.querySelector('.canvas-area').classList.add("hidden");
+				document.querySelector('.editItem').classList.remove("hidden");
+				
+				document.querySelector('#p5Canvas').removeChild(document.querySelector('canvas'));
+				
 				this.ps = null;
 			}
 			else {
+				console.log("PLAYYYYYYYYYY")
+				
 				this.isPlayP5 = true;
-				this.ps = new P5(this.script)
+				
+				//this.ps.isPlayP5 = true;
+				
+				//this.ps.isPlayP5 = true;
+				
+				
+				
+				this.ps = new P5(this.radar.main)
+    // NOTE: p5.jsからのコールバックを受け取る
+    this.radar.setDelegate(this.callbackOnP5);
+    this.radar.setFctSound(0)
+    console.log("couleyr : " + this.tools_color_text)
+    this.radar.setFctTextColor(this.tools_color_text)
+    this.radar.setFctBgColor(this.tools_color_bg)
+
+		     
+				this.radar.setFctTexte(document.querySelector('.editItem').innerHTML);
+				
+				this.startP5();
+				
+				document.querySelector('.editItem').classList.add("hidden");
+				document.querySelector('.canvas-area').classList.remove("hidden");
+				
 			}
-			console.log("ici")
+			
 			//this.ps.isPlayP5 = true;
 		}
 		,
@@ -337,6 +392,8 @@ export default {
 				formData.append('soundBlob', base64) ;
 				formData.append('id_message', this.id_message) ;
 				formData.append('id_user', this.id_user) ;
+				formData.append('id_effet', this.id_effet) ;
+				formData.append('font_size', this.tools_font_size) ;
 				formData.append('texte', this.message) ;
 				formData.append('duree', this.mesureTps) ;
 				formData.append('date_creation', this.date_creation) ;
@@ -407,38 +464,46 @@ export default {
 	    }
 	    ,
 	    initEdit() {
-		    this.message = this.messageInit;
-		    const el = document.querySelector('.editItem');  
-			const selection = window.getSelection();  
-			const range = document.createRange();  
-			selection.removeAllRanges();  
-			range.selectNodeContents(el);  
-			range.collapse(false);  
-			selection.addRange(range);  
-			el.focus();
+		    
+			    this.message = this.messageInit;
+			    const el = document.querySelector('.editItem');  
+				const selection = window.getSelection();  
+				const range = document.createRange();  
+				selection.removeAllRanges();  
+				range.selectNodeContents(el);  
+				range.collapse(false);  
+				selection.addRange(range);  
+				el.focus();
 		}
 		,
 		clickEdit: function(e){
-		    this.message = e.target.innerHTML;
-		    this.initDisplayErreur();
-		    if (!this.isBegin) {
-			    e.target.innerHTML = '';
-			    this.message = '';
-			    this.messageInit = '';
-			    this.isBegin = true;
-			}
-						
-			if ((this.isBegin) && (this.message != '')) {
-				this.displayStart = true;
-				this.displaySave = false;
-				this.displayReset = true;
-				this.displayRecord = true;
-			}
-			else {
-				if (this.message == '') {
-					this.reset(false);
+			this.message = e.target.innerHTML;
+			
+			if (this.id_message == 0) {
+			    
+			    
+			    if (!this.isBegin) {
+				    e.target.innerHTML = '';
+				    this.message = '';
+				    this.messageInit = '';
+				    this.isBegin = true;
 				}
+							
+				if ((this.isBegin) && (this.message != '')) {
+					this.displayStart = true;
+					this.displaySave = false;
+					this.displayReset = true;
+					this.displayRecord = true;
+				}
+				else {
+					if (this.message == '') {
+						this.reset(false);
+					}
+				}
+				
+				console.log("TEXTE : " + document.querySelector('.editItem').innerHTML)
 			}
+			
 		}
 		,
 	    reset(isSource) {
@@ -472,6 +537,10 @@ export default {
 			    document.querySelector('.btRecord').classList.add("animate-onWait");
 			    document.querySelector('.btRecord').innerHTML = 'record';
 			    this.recorder.stop();
+			}
+			
+			if (this.isPlayP5) {
+				this.startEffect();
 			}
 			
 			this.initEdit();
@@ -592,7 +661,7 @@ export default {
 			
 			this.resultSound = '';
 			
-		    this.testTito();
+		    
 		    
 		    if (this.id_source == 1) {
 			    this.mic.open();
@@ -605,7 +674,7 @@ export default {
 					
 				//important
 				Tone.Transport.start();
-				this.intervalDisplayMic = setInterval(() => this.displayVal(this.meter.getValue()), 100);
+				this.intervalDisplayMic = setInterval(() => this.displayVal(this.meter.getValue(),this.meter.getValue()), 100);
 				this.recording();
 		    }
 		    else {
@@ -622,12 +691,15 @@ export default {
 							this.playerSound.buffer = bufferSound;
 							
 							this.playerSound.start();
+							
+							
+							  
 							this.isPlayer = true;
 							this.isCapture = true;
 							
 							
 							
-							this.intervalDisplayMic = setInterval(() => this.displayVal(this.meter.getValue()), 100);
+							this.intervalDisplayMic = setInterval(() => this.displayVal(this.meter.getValue(),this.meter.getValue()), 100);
 						
 						//important
 						Tone.Transport.start();
@@ -649,7 +721,7 @@ export default {
 				
 		}
 	    ,
-	    displayVal: function(val) {
+	    displayVal: function(val,val1) {
 		    this.index++;
 		    
 		    //const dBFS = this.meter.getLevel();
@@ -658,22 +730,27 @@ export default {
 			const lowerBound = 0;
 			const upperBound = 100;
 			
+			//console.log("val = " + val)
+			//console.log("val1 = " + val1)
+			
 			val = parseInt(val) + 100;
 
 		    this.mesureVal =  val;
-		    console.log("val = " + val)
+		    
 		    
 		    this.mesureTps = this.convertSoundDuration(Tone.Transport.getSecondsAtTime());
+
+		    this.radar.setFctSound(this.clamp(val)/8)
 		    
-		    this.ps.micLevel = val / 1000;
-		    
+		    //console.log("NEW val = " + (this.clamp(val)))
 			//effet
 		    //this.tools_font_size = (this.mesureVal * 50) / 90;
 		    //this.updateFontSize();
 		}
 		,
-	    clamp: function(value, min, max) {
-		   return Math.min(max, Math.max(min, value));
+	    clamp: function(value) {
+		    return (0.0079 * value) + 0.001;
+		   //return Math.min(max, Math.max(min, value));
 		}
 		,
 		convertSoundDuration(sec)
@@ -687,9 +764,32 @@ export default {
 	      this.$router.push('/login')
 	    }
 	    ,
+	    playMessage: function()
+	    {
+		    this.fileSound = this.message_son;
+		    
+		    if (this.isPlaying) {
+			    this.isPlaying = false;
+			    this.isRecord = true;
+			    this.beforeRecording();
+			    
+			    
+			    
+		    }
+		    else {
+			    this.id_source = 2;
+					this.isRecord = false;
+			    this.isPlaying = true;
+			    //this.loadSound(this.fileSound)
+			    this.beforeRecording();
+		    }
+
+	    }
+	    ,
 	    beforeRecording: function()
 	    {
 		    this.initDisplayErreur();
+		    this.startEffect();
 		    if (this.isRecord) this.recording()
 		    else this.startCapture();
 	    }
@@ -727,6 +827,13 @@ export default {
 			if (this.id_source == 2) {
 				this.displayAddSound(0)
 			}
+		}
+		,
+		selectEffet: function()
+		{
+			if (this.id_effet == 1) this.radar = effet_1;
+			if (this.id_effet == 2) this.radar = effet_2;
+			if (this.id_effet == 3) this.radar = effet_3;
 		}
 		,
 		verifDisplayAddSound: function()
@@ -869,7 +976,10 @@ export default {
 	    }
 		
 	}
+
 }
+
+
 
 
 
