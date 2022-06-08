@@ -88,8 +88,8 @@ var path_folder = 'upload/';
 //server
 //var path_www = '../webfonts/';
 
-//var path_upload = '../static/upload/';
-var path_upload = '../ampersound.onoci.net/upload/';
+var path_upload = '../static/upload/';
+//var path_upload = '../ampersound.onoci.net/upload/';
 
 
 var fichier = '';

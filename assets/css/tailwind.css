@@ -429,6 +429,11 @@ select:-webkit-autofill:focus {
   	width:auto;
   }
   
+  #p5Canvas canvas {
+	  
+	  width:100% !important;
+  }
+  
   svg {
 	   @apply w-4 h-4;
   }
@@ -542,6 +547,12 @@ button {
 @media (min-width: 1024px) {
 	.container {
 	     @apply max-w-full;
+	}
+}
+
+@media (min-width: 768px) {
+	.container {
+	    @apply max-w-full;
 	}
 }
 

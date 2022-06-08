@@ -14,6 +14,14 @@
 					  	<textarea  ref="titot" placeholder="..." v-model="tools_message" name="tools_message" id="tools_message"></textarea>
 				  	</div>
 				  	<div>
+					  	<label>Effets</label>
+					  	<select v-model="id_effet" name="id_effet" id="id_effet" @change="selectEffet">
+							<option value="1"> MS1</option>
+							<option value="2"> MS1</option>
+							<option value="3"> MS3</option>
+						</select>
+				  	</div>
+				  	<div>
 					  	<label>Couleur</label>
 					  	<div class="zoneColorText"><color-picker v-model="tools_color_text" @change="updateColorText"></color-picker></div>
 				  	</div>
@@ -35,10 +43,10 @@
 		  	</div>
 		  </div>
 		  
-		  <div class="col-content" v-bind:class="{ marge: isTools }">
+		  <div class="col-content" @click="initEspace()" v-bind:class="{ marge: isTools }">
 		  	<div class="mesure">
 			  	<div>
-				  	<div><div class="mesure-val">{{mesureVal}}</div><div v-on:click="testTito" class="indice">DBA</div></div>
+				  	<div><div class="mesure-val">{{mesureVal}}</div><div class="indice">DBA</div></div>
 				  	<div v-show="isRecord" class="mesure-temps">Durée : {{mesureTps}}</div>
 			  	</div>
 			  	<div v-show="displayRecord">
@@ -52,7 +60,7 @@
 		  	<div class="col-content-list">
 			  		<div class="item" style="display:block">
 				  		<div @click="clickEdit"  @input="clickEdit" ref="editItem" class="editItem" contenteditable>{{messageInit}}</div>
-				  		<div id="p5Canvas" class="canvas-area"></div>
+				  		<div style="display:block;width: 100%;height:auto" id="p5Canvas" class="canvas-area hidden"></div>
 			  		</div>
 		  	</div>
 		  			  	
@@ -147,7 +155,9 @@ import * as Tone from 'tone';
 import moment from 'moment';
 
 if (process.browser) {
-  var radar = require('~/assets/js/Radar.js')
+  var effet_1 = require('~/assets/js/ms1.js')
+  var effet_2 = require('~/assets/js/ms2.js')
+  var effet_3 = require('~/assets/js/ms3.js')
 }
 
 var P5;
@@ -214,10 +224,11 @@ export default {
 			isShowNoResultSound:false,
 			displayActiveSound:'',
 			isPlayP5:false,
-			
+			radar:'',
+			id_effet:1,
 	    }
 	  }
-  ,
+	,
 	mounted() {   
 
 	 this.parametres = JSON.parse(localStorage.getItem('parametres') || "[]") ;
@@ -227,48 +238,77 @@ export default {
 	 this.initDisplayErreur();
 	 this.getSounds();
 	 
-	 const P5 = require('p5')
-     this.ps = new P5(radar.main)
-    // NOTE: p5.jsからのコールバックを受け取る
-    radar.setDelegate(this.callbackOnP5);
+	 P5 = require('p5')
+	 //P5Sound = require('p5/lib/addons/p5.sound');
+     
     //radar.setLoop();
 	 
 	 
-    
+    this.selectEffet();
 
 	},
 	methods: {
+		initEspace: function()
+		{
+			if (this.isTools) {
+			    this.isTools = false;
+		    }
+		}
+		,
 		callbackOnP5: function(timeStr) {
 	      this.mesureVal = timeStr;
 	    }
 	    ,
 		startP5: function() {
-			console.log("START : " + radar)
-			radar.startLoopP5();
+			this.radar.startLoopP5();
 		},
 		stopP5: function() {
-			console.log("STOP")
-			radar.stopLoopP5();
+			this.radar.stopLoopP5();
 		},
-		testTito: function()
+		startEffect: function()
 		{
 			console.log("testTito")
 			if (this.isPlayP5) {
-				console.log("STOPPPPPPPPP")
 				/*this.isPlayP5 = false;
 				this.ps = null;
 				delete this.ps;*/
 				this.stopP5();
 				this.isPlayP5 = false;
+				
+				document.querySelector('.canvas-area').classList.add("hidden");
+				document.querySelector('.editItem').classList.remove("hidden");
+				
+				document.querySelector('#p5Canvas').removeChild(document.querySelector('canvas'));
+				
+				this.ps = null;
 			}
 			else {
 				console.log("PLAYYYYYYYYYY")
-				this.startP5();
+				
 				this.isPlayP5 = true;
 				
 				//this.ps.isPlayP5 = true;
 				
-				this.ps.isPlayP5 = true;
+				//this.ps.isPlayP5 = true;
+				
+				
+				
+				this.ps = new P5(this.radar.main)
+    // NOTE: p5.jsからのコールバックを受け取る
+    this.radar.setDelegate(this.callbackOnP5);
+    this.radar.setFctSound(0)
+    console.log("couleyr : " + this.tools_color_text)
+    this.radar.setFctTextColor(this.tools_color_text)
+    this.radar.setFctBgColor(this.tools_color_bg)
+
+		     
+				this.radar.setFctTexte(document.querySelector('.editItem').innerHTML);
+				
+				this.startP5();
+				
+				document.querySelector('.editItem').classList.add("hidden");
+				document.querySelector('.canvas-area').classList.remove("hidden");
+				
 			}
 			
 			//this.ps.isPlayP5 = true;
@@ -310,6 +350,8 @@ export default {
 				formData.append('soundBlob', base64) ;
 				formData.append('id_message', this.id_message) ;
 				formData.append('id_user', this.id_user) ;
+				formData.append('id_effet', this.id_effet) ;
+				formData.append('font_size', this.tools_font_size) ;
 				formData.append('texte', this.message) ;
 				formData.append('duree', this.mesureTps) ;
 				formData.append('date_creation', this.date_creation) ;
@@ -412,6 +454,9 @@ export default {
 					this.reset(false);
 				}
 			}
+			
+			console.log("TEXTE : " + document.querySelector('.editItem').innerHTML)
+			
 		}
 		,
 	    reset(isSource) {
@@ -445,6 +490,10 @@ export default {
 			    document.querySelector('.btRecord').classList.add("animate-onWait");
 			    document.querySelector('.btRecord').innerHTML = 'record';
 			    this.recorder.stop();
+			}
+			
+			if (this.isPlayP5) {
+				this.startEffect();
 			}
 			
 			this.initEdit();
@@ -578,7 +627,7 @@ export default {
 					
 				//important
 				Tone.Transport.start();
-				this.intervalDisplayMic = setInterval(() => this.displayVal(this.meter.getValue()), 100);
+				this.intervalDisplayMic = setInterval(() => this.displayVal(this.meter.getValue(),this.meter.getValue()), 100);
 				this.recording();
 		    }
 		    else {
@@ -600,7 +649,7 @@ export default {
 							
 							
 							
-							this.intervalDisplayMic = setInterval(() => this.displayVal(this.meter.getValue()), 100);
+							this.intervalDisplayMic = setInterval(() => this.displayVal(this.meter.getValue(),this.meter.getValue()), 100);
 						
 						//important
 						Tone.Transport.start();
@@ -622,7 +671,7 @@ export default {
 				
 		}
 	    ,
-	    displayVal: function(val) {
+	    displayVal: function(val,val1) {
 		    this.index++;
 		    
 		    //const dBFS = this.meter.getLevel();
@@ -631,22 +680,27 @@ export default {
 			const lowerBound = 0;
 			const upperBound = 100;
 			
+			//console.log("val = " + val)
+			//console.log("val1 = " + val1)
+			
 			val = parseInt(val) + 100;
 
 		    this.mesureVal =  val;
-		    console.log("val = " + val)
+		    
 		    
 		    this.mesureTps = this.convertSoundDuration(Tone.Transport.getSecondsAtTime());
+
+		    this.radar.setFctSound(this.clamp(val)/8)
 		    
-		    this.ps.micLevel = val / 1000;
-		    
+		    //console.log("NEW val = " + (this.clamp(val)))
 			//effet
 		    //this.tools_font_size = (this.mesureVal * 50) / 90;
 		    //this.updateFontSize();
 		}
 		,
-	    clamp: function(value, min, max) {
-		   return Math.min(max, Math.max(min, value));
+	    clamp: function(value) {
+		    return (0.0079 * value) + 0.001;
+		   //return Math.min(max, Math.max(min, value));
 		}
 		,
 		convertSoundDuration(sec)
@@ -663,6 +717,7 @@ export default {
 	    beforeRecording: function()
 	    {
 		    this.initDisplayErreur();
+		    this.startEffect();
 		    if (this.isRecord) this.recording()
 		    else this.startCapture();
 	    }
@@ -700,6 +755,13 @@ export default {
 			if (this.id_source == 2) {
 				this.displayAddSound(0)
 			}
+		}
+		,
+		selectEffet: function()
+		{
+			if (this.id_effet == 1) this.radar = effet_1;
+			if (this.id_effet == 2) this.radar = effet_2;
+			if (this.id_effet == 3) this.radar = effet_3;
 		}
 		,
 		verifDisplayAddSound: function()

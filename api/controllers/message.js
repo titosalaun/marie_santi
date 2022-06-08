@@ -63,16 +63,20 @@ Message.addMessage= async (connection,mysql,Fct,tools,nconf,fs,path_upload,buffe
   	var sql = '';
 	var id_message = para.id_message;
 	var id_user = para.id_user;
+	var id_effet = para.id_effet;
+	if (id_effet == '') id_effet = 1;
+	var font_size = para.font_size;
+	if (font_size == '') font_size = 20;
 	var texte = para.texte;
 	var duree = para.duree;
 	var date_creation = para.date_creation;
 	var isNew = para.isNew;
 console.log("isNew : " + isNew)
   	if (id_message == 0) {
-	  	sql = "INSERT INTO `message` VALUES (NULL,'" + tools.sql_clean(id_user)  + "','" + tools.sql_clean(texte)  + "','','0','" + tools.sql_clean(date_creation)  + "');";	 	 			 
+	  	sql = "INSERT INTO `message` VALUES (NULL,'" + tools.sql_clean(id_user)  + "','" + tools.sql_clean(id_effet)  + "','" + tools.sql_clean(font_size)  + "','" + tools.sql_clean(texte)  + "','','0','" + tools.sql_clean(date_creation)  + "');";	 	 			 
 	}
 	else {
-		sql = "UPDATE `message` set texte = '" + tools.sql_clean(texte) + "',fichier = '',duree = '0',date_creation = '" + tools.sql_clean(date_creation) + "'  where id_message = " + id_message;
+		sql = "UPDATE `message` set id_effet = '" + tools.sql_clean(id_effet) + "',font_size = '" + tools.sql_clean(font_size) + "',texte = '" + tools.sql_clean(texte) + "',fichier = '',duree = '0',date_creation = '" + tools.sql_clean(date_creation) + "'  where id_message = " + id_message;
 	}
 
 console.log(sql)
