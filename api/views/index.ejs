@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aléatoire</title>
+    <link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+	<div class="zone">
+	    <div id="container">
+	    </div>
+    </div>
+        
+    
+    <script src="js/jquery.min.js"></script>
+     <script src="js/konva.min.js"></script>
+   
+	<script src="js/main.js"></script>
+
+	<script>
+		var stage;
+		var layer, groupe;
+		$(document).ready(function() {
+			buildStage();
+		});
+		
+		function buildStage()
+		{
+			stage_width = document.querySelectorAll(".zone")[0].offsetWidth;
+			stage_height = document.querySelectorAll(".zone")[0].offsetHeight;
+		
+			  
+		      stage = new Konva.Stage({
+		        container: 'container',
+		        width: stage_width,
+		        height: stage_height,
+		      });
+		
+		      layer = new Konva.Layer();
+		      groupe = new Konva.Group();
+
+			  stage.add(layer);
+			  
+			  var container = stage.container();
+			  container.tabIndex = 1;
+      // focus it
+      // also stage will be in focus on its click
+      container.focus();
+			  console.log("container : " + container)
+			  container.addEventListener('keydown', function (e) {
+				  console.log("iccici")
+			  	e = e||window.event // IE support
+			    var c = e.keyCode
+			    var ctrlDown = e.ctrlKey||e.metaKey // Mac support
+			
+			        if (e.keyCode === 8) {
+
+			        } 
+			        
+			         var p_width = getRndInteger(60, 150)
+					 var resultat = getCircle(stage,getRndInteger(0, stage_width),getRndInteger(0, stage_height),p_width,"mon texte\naaa");
+
+					 groupe = new Konva.Group();
+					 groupe.add(resultat.element);
+					 groupe.add(resultat.texte);
+					 layer.add(groupe)
+					 //resultat.element.to({opacity: 1});
+					 
+					 var tween = new Konva.Tween({
+				        node: resultat.element,
+				        opacity: 1,
+				        duration: 1,
+				      });
+				      
+				      tween.play();
+      
+			         layer.draw();
+			         
+			         /*var alphaNodes = layer.find(node => {
+					     if (node.name() != "background") {
+						     node.cache();
+						     node.filters([Konva.Filters.Blur]);
+						 }
+					});
+	
+					layer.draw();*/
+			         
+			         
+	      
+			        e.preventDefault();
+			      });
+			  
+			  //layer.draw();
+		}
+
+		function getCircle(stage,p_x,p_y,p_radius,txt) {
+		    var pos = initPositionElement(p_x,p_y,0,0,p_radius,-1)
+			var couleur = generateLightColorHex();
+	    	var circle = new Konva.Circle({
+		        x: pos.p_x,
+		        y: pos.p_y,
+		        radius: p_radius,
+		        fill:couleur,
+			    stroke: couleur,
+		        strokeWidth: 1,
+			    draggable: true,
+			    opacity:0.2,
+			    name:"obj",
+			    /*fillPriority:'color',*/
+			    /*fillLinearGradientStartPoint: { x: -50, y: -50 },
+          fillLinearGradientEndPoint: { x: 50, y: 50 },
+          fillLinearGradientColorStops: [0, 'red', 1, 'yellow'],*/
+			    
+		    });
+		    
+		     var texte = new Konva.Text({
+			  text: txt,
+			  x: pos.p_x - p_radius / 2,
+		      y: pos.p_y - p_radius / 2,
+			  fontFamily: 'sans-serif',
+			  fontSize: 16,
+			  fill: '#000'
+			});
+			
+			//texte.x(texte.x() + (texte.width()/2))
+			
+			
+			console.log("text : " + texte.x())
+			
+			var resultat = new Object();
+			resultat.element = circle; 
+			resultat.texte = texte;
+		    return resultat;
+		}
+		
+		function initPositionElement(p_x,p_y,p_width,p_height,p_radius,p_angle)
+		{
+			var container = document.querySelector('.konvajs-content');
+			
+			if (p_radius != -1) {
+				p_x  += p_radius;
+				p_y  += p_radius;
+				if (p_x >= container.offsetWidth - p_radius) p_x = container.offsetWidth - p_radius;
+				if (p_y >= container.offsetHeight - p_radius) p_y = container.offsetHeight - p_radius;
+			}
+			else {
+				if (p_angle != -1) {
+				 	p_x += p_angle/2;
+				 	if (p_x >= container.offsetWidth - p_angle) p_x = container.offsetWidth - p_angle;
+				 	if (p_y >= container.offsetHeight - p_angle) p_y = container.offsetHeight - p_angle;
+				}
+				else {
+					if (p_x >= container.offsetWidth - p_width) p_x = container.offsetWidth - p_width;
+					if (p_y >= container.offsetHeight - p_height) p_y = container.offsetHeight - p_height;
+				}
+				
+				
+			}
+			
+			var pos = new Object();
+			pos.p_x = p_x;
+			pos.p_y = p_y;
+			return pos;
+		}
+		
+		function getRndInteger(min, max) {
+		  return Math.floor(Math.random() * (max - min) ) + min;
+		}
+		
+		function getRndFloat(min, max) {
+		  return (Math.random() * (max - min)  + min).toFixed(2);
+		}
+		
+		function getrandomColor() {
+			return '#' + Math.floor(Math.random()*16777215).toString(16);
+		}
+		
+		function generateDarkColorHex() {
+		  let color = "#";
+		  for (let i = 0; i < 3; i++)
+		    color += ("0" + Math.floor(Math.random() * Math.pow(16, 2) / 2).toString(16)).slice(-2);
+		  return color;
+		}
+		
+		function generateLightColorHex() {
+		  let color = "#";
+		  for (let i = 0; i < 3; i++)
+		    color += ("0" + Math.floor(((1 + Math.random()) * Math.pow(16, 2)) / 2).toString(16)).slice(-2);
+		  return color;
+		}
+    </script>
+</body>
+</html>

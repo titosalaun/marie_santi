@@ -1,0 +1,1 @@
+{ "port":4003,"url_server":"https://api-ampersound.onoci.net","SECRET":"mykey","email_from": "salaun@onoci.net","host_smtp": "smtp.infomaniak.ch", "port_smtp": 465, "user_smtp": "salaun@onoci.net", "pass_smtp": "c230400sMail!!"}

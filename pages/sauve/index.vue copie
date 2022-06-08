@@ -1,0 +1,100 @@
+<template>
+  <div class="container">
+	  <div class="content">
+		<div class="flex justify-center" id="p5Canvas"></div>
+	    
+	    <div class="tools">
+			<div class="pt-6">
+		    </div>
+	    </div>
+	  </div>
+  </div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue'
+export default Vue.extend({
+	
+	mounted() {   
+	 const script = function (p5) {    
+	  var speed = 2;    
+	  var posX = 0;
+	  let font;
+	  let points;
+	  let bounds;
+	  var para = 200;
+	  
+	  // NOTE: Set up is here  
+	  p5.preload = _ => {      
+	   font = p5.loadFont('UniversalSansDisplayTrial491-Regular.otf');    
+	  }   
+	  p5.setup = _ => {      
+	   var canvas = p5.createCanvas(p5.displayWidth, p5.displayHeight);   
+	   canvas.parent("p5Canvas");   
+	   
+	    points = font.textToPoints(
+		    'nuisance', 0, 0, para, {
+		      sampleFactor: 1,
+		      simplifyThreshold: 0
+		    });
+		
+		  bounds = font.textBounds(
+		    'nuisance', 0, 0, para);
+		
+		  p5.cursor(p5.CROSS);
+		  p5.fill(255, 127);
+		  p5.noStroke();
+  
+	  }     
+	  // NOTE: Draw is here
+	  p5.draw = _ => {     
+		  //p5.background(this.bg);
+		  p5.background(0);
+  
+		  p5.stroke(51);
+		  p5.line(p5.width / 2, 0, p5.width / 2, p5.height);
+		  p5.line(0, p5.height / 2, p5.width, p5.height / 2);
+		  p5.noStroke();
+		  
+		  let centerDist = p5.dist(p5.mouseX, p5.mouseY, p5.width / 2, p5.height / 2);
+		
+		  let transparency = p5.map(centerDist, 0, p5.width / 2, para, 50);
+		  transparency = p5.constrain(transparency, 50, para);
+		  p5.fill(255, transparency);
+		  
+		  let jiggle = p5.map(centerDist, 0, p5.width, 1, para);
+		
+		  p5.translate((p5.width - p5.abs(bounds.w)) / 2, 
+		            (p5.height + p5.abs(bounds.h)) / 2); 
+		            
+		  for (let i = 0; i < points.length; i++) {
+		    let p = points[i];
+		    p5.ellipse(p.x + jiggle * p5.randomGaussian(), 
+		      p.y + jiggle * p5.randomGaussian(), 5, 5);
+		  }
+	   
+	  }  
+	 }   
+	 // NOTE: Use p5 as an instance mode
+	 const P5 = require('p5');
+	 this.tito = new P5(script)
+	},
+	data() {
+	    return {
+		  tito:'',
+		  bg:0,
+	    }
+	  },
+	methods: {
+		Play() {
+			console.log("tito: " + this.tito)
+			this.bg = 255
+		  //this.tito.background(255);
+	    }
+	}
+})
+</script>
+
+<style scoped>
+
+</style>

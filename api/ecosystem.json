@@ -1,0 +1,14 @@
+{
+  "apps" : [{
+    "name"        : "ghost",
+    "script"      : "server.js",
+    "args"        : [],
+    "watch"       : true,
+    "node_args"   : "",
+    "merge_logs"  : true,
+    "cwd"         : "/home/clients/072b6d82c967647a4c51cd6fee54ffe0/sites/ampersound.onoci.net/api/",
+    "env": {
+      "NODE_ENV": "production"
+    }
+  }]
+}

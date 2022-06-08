@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/sauve/texte", {data:[{}],fetch:{},mutations:[]});
