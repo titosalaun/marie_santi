@@ -25,8 +25,8 @@ export function main(_p5) {
 	  fontSize = 50;
 	  string="je m'appelle tito"
 	  
-	  fontSize = 100;
-	  ecart=100
+	  fontSize = 250;
+	  ecart=250
 
 	   p5.noLoop();
   }
@@ -41,7 +41,7 @@ export function main(_p5) {
 	  p5.textSize(fontSize);
 	  
 	  
-	stringArray = font.textToPoints(string,0, 100, fontSize, textToPointsOptions)
+	stringArray = font.textToPoints(string,0, fontSize, fontSize, textToPointsOptions)
 	 console.log("stringArray : " + stringArray)
   }
 
@@ -127,6 +127,11 @@ function setBgColor(val)
 	bgColor = val;
 }
 
+function setFontSize(val)
+{
+	console.log("SIZE : " + val)
+}
+
 
 export function startLoopP5() {
     startP5();
@@ -155,6 +160,11 @@ export function setFctTextColor(val) {
 
 export function setFctBgColor(val) {
     setBgColor(val);
+
+}
+
+export function setFctFontSize(val) {
+    setFontSize(val);
 
 }
 

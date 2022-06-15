@@ -342,6 +342,8 @@ export default {
     console.log("couleyr : " + this.tools_color_text)
     this.radar.setFctTextColor(this.tools_color_text)
     this.radar.setFctBgColor(this.tools_color_bg)
+    this.radar.setFctFontSize(this.tools_font_size)
+    
 
 		     
 				this.radar.setFctTexte(document.querySelector('.editItem').innerHTML);

@@ -12,8 +12,14 @@ export default{
 	mounted() {   
 		//localStorage.setItem('parametres', JSON.stringify(this.parametres));
 		this.parametres = JSON.parse(localStorage.getItem('parametres') || "[]") ;
-		if (this.parametres.length == 0) this.initParametres();
-		else this.loadParametres();
+		if(typeof this.parametres.length === 'undefined') {
+			console.log("init : " + this.parametres.length)
+			this.initParametres();
+		}
+		else {
+			console.log("no init : " + this.parametres.length)
+			this.loadParametres();
+		}
 	},
     watch: {
         color_text: {
@@ -49,8 +55,9 @@ export default{
 	    }
 	    ,
 	    initParametres: function() {
+		    console.log("INIT")
 	      	var para = new Object();
-		    para.color_text = '#ff0000';
+		    para.color_text = '#ffffff';
 		    para.color_bg = '#000';
 		    
 		    this.parametres = para;
@@ -61,6 +68,7 @@ export default{
 	    }
 	    ,
 	    loadParametres: function() {
+		   
 		    var para = this.parametres;
 		    this.color_text = para.color_text;
 		    this.color_bg = para.color_bg;

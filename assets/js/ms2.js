@@ -34,10 +34,9 @@ export function main(_p5) {
 
    p5.preload = _ => {
     font = p5.loadFont("UniversalSansDisplayTrial491-Regular.otf");
-	  fontSize = 50;
+	  fontSize = 250;
 	  string="je m'appelle tito"
 	  
-	  fontSize = 150;
   ecart=100;
   point_x_max = 40;
   point_x_min = -15;
@@ -62,7 +61,7 @@ export function main(_p5) {
 	  p5.textSize(fontSize);
 	  p5.stroke(33, 150, 243)
 	  
-	stringArray = font.textToPoints(string,0, 200, fontSize, textToPointsOptions)
+	stringArray = font.textToPoints(string,0, fontSize, fontSize, textToPointsOptions)
 	 console.log("stringArray : " + stringArray)
   }
 
@@ -171,6 +170,11 @@ function setBgColor(val)
 	bgColor = val;
 }
 
+function setFontSize(val)
+{
+	console.log("SIZE : " + val)
+}
+
 
 export function startLoopP5() {
     startP5();
@@ -199,6 +203,11 @@ export function setFctTextColor(val) {
 
 export function setFctBgColor(val) {
     setBgColor(val);
+
+}
+
+export function setFctFontSize(val) {
+    setFontSize(val);
 
 }
 
