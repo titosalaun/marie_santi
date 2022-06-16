@@ -4,11 +4,11 @@ let p5;
 let delegate;
 let mic;
 let micLevel;
-
-
+let canvas;
+let id_canvas;
 let font;
 let fontSize;
-let string;
+let mon_texte = '';
 let stringArray;
 
 let textColor;
@@ -25,23 +25,22 @@ export function main(_p5) {
 
    p5.preload = _ => {
     font = p5.loadFont("UniversalSansDisplayTrial491-Regular.otf");
-	  fontSize = 200;
-	  string=""
+	  //fontSize = 200;
 	   p5.noLoop();
   }
   
   p5.setup = _ => {
-	  console.log("WITH : " + p5.displayWidth)
-	  console.log("Height : " + p5.displayHeight)
+	  console.log("SETUP : ")
   	let canvas = p5.createCanvas(1000, 500);
-  	canvas.parent("p5Canvas");
+  	canvas.parent("p5Canvas_" + id_canvas);
 	  //microSetup(canvas)
 	  p5.textFont(font);
-	  console.log("fontSize : " + fontSize)
+	  console.log("fontSizeLoad : " + fontSize)
+	   console.log("TEXTE : "  + mon_texte)
 	  p5.textSize(fontSize);
 	  
 	  
-	stringArray = font.textToPoints(string,0, fontSize, fontSize, textToPointsOptions)
+	stringArray = font.textToPoints(mon_texte,0, fontSize-91, fontSize, textToPointsOptions)
 	  ///console.log("stringArray : " + stringArray)
   }
 
@@ -49,7 +48,7 @@ export function main(_p5) {
   	  //microUpdate()
 	  p5.background(bgColor);
 	  p5.stroke(textColor)
-	  
+	  p5.textSize(fontSize);
 
 	  if (micLevel == 'undefined') micLevel = 0;
 	  if (micLevel == '') micLevel = 0;
@@ -105,8 +104,8 @@ function stopP5() {
 }
 
 function setTexte(val) {
-	console.log("CHARGE TEXTE")
-    string = val
+	console.log("CHARGE TEXTE : " + val)
+    mon_texte = val
 
 }
 
@@ -124,7 +123,14 @@ function setBgColor(val)
 
 function setFontSize(val)
 {
-	console.log("SIZE : " + val)
+	fontSize = parseInt(val);
+	console.log("SIZE : " + fontSize)
+}
+
+function setCanvasId(id)
+{
+	id_canvas = id;
+	
 }
 
 
@@ -160,6 +166,11 @@ export function setFctBgColor(val) {
 
 export function setFctFontSize(val) {
     setFontSize(val);
+
+}
+
+export function setFctCanvasId(id) {
+    setCanvasId(id);
 
 }
 

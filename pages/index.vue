@@ -10,11 +10,7 @@
 		  	<div class="tools">
 			  	<div class="tools-content"  v-bind:class="{ open: isTools }">
 				  	<div>
-					  	<label>Message</label>
-					  	<textarea  ref="titot" placeholder="..." v-model="tools_message" name="tools_message" id="tools_message"></textarea>
-				  	</div>
-				  	<div>
-					  	<label>Effets</label>
+					  	<label class="big">Effets</label>
 					  	<select v-model="id_effet" name="id_effet" id="id_effet" @change="selectEffet">
 							<option value="1"> MS1</option>
 							<option value="2"> MS2</option>
@@ -22,20 +18,41 @@
 						</select>
 				  	</div>
 				  	<div>
-					  	<label>Couleur</label>
+					  	<label class="big">Couleur</label>
 					  	<div class="zoneColorText"><color-picker v-model="tools_color_text" @change="updateColorText"></color-picker></div>
 				  	</div>
 				  	<div>
-					  	<label>Fond</label>
+					  	<label class="big">Fond</label>
 					  	<div class="zoneColorBg"><color-picker v-model="tools_color_bg" @change="updateColorBg"></color-picker></div>
 				  	</div>
 				  	<div>
-					  	<label>Taille : {{tools_font_size}}</label>
+					  	<label>Taille de la font : {{tools_font_size}}</label>
 					  	<input class="slider" type="range" @input="updateFontSize()" id="tools_font_size" min="10" max="200" v-model="tools_font_size" />
+				  	</div>
+				  	<div>
+					  	<label>Interlettrage : {{tools_interlettrage}}</label>
+					  	<input class="slider" type="range" @input="updateFontSize()" id="tools_interlettrage" min="-10" max="40" v-model="tools_interlettrage" />
+				  	</div>
+				  	<div>
+					  	<label>Interlignage : {{tools_interlignage}}</label>
+					  	<input class="slider" type="range" @input="updateFontSize()" id="tools_interlignage" min="10" max="200" v-model="tools_interlignage" />
+				  	</div>
+
+				  	<div>
+					  	<label class="big">Formes</label>
+					  	<select v-model="id_forme" name="id_forme" id="id_forme">
+							<option value="1"> MS1</option>
+							<option value="2"> MS2</option>
+							<option value="3"> MS3</option>
+						</select>
+				  	</div>
+				  	
+				  	<div>
+					  	<button class="cursor-pointer" @click="initParametres();">Valeurs par défaut</button>
 				  	</div>
 				  	
 				  	<div v-show="isAuthenticated">
-					  	<label class="cursor-pointer" @click="logout();">log-out</label>
+					  	<button class="cursor-pointer" @click="logout();">log-out</button>
 				  	</div>
 				  	
 			  	</div>
@@ -63,7 +80,7 @@
 		  	<div id="content"></div>
 		  	<div class="col-content-list">
 			  		<div class="item" style="display:block">
-				  		<div @click="clickEdit"  @input="clickEdit" ref="editItem" class="editItem" contenteditable>{{messageInit}}</div>
+				  		<div @click="clickEdit"  @input="clickEdit" ref="editItem" class="editItem" contenteditable v-html="messageInit"></div>
 				  		<div style="display:block;width: 100%;height:auto" id="p5Canvas" class="canvas-area hidden"></div>
 			  		</div>
 		  	</div>
@@ -199,6 +216,8 @@ export default {
 			tools_color_text:'#fff',
 			tools_color_bg:'#000',
 			tools_font_size:50,
+			tools_interlignage:52,
+			tools_interlettrage:1,
 			isMic:false,
 			meter:'',
 			mic:'',
@@ -211,7 +230,7 @@ export default {
 			isDeviceInitialize:false,
 			
 			message:'',
-			messageInit:'Votre texte...',
+			messageInit:'ABCDEFGHIJKLMN<br />OPQRSTUVWXYZ<br />abcdefghijkl\nmnopqrstuvwxyz<br />0123456789ABCDEFGHIJKLMN<br />OPQRSTUVWXYZ\nabcdefghijkl<br />mnopqrstuvwxyz<br />0123456789',
 			id_source:1,
 			isBegin:false,
 			displayStart:false,
@@ -242,6 +261,7 @@ export default {
 			isPlayP5:false,
 			radar:'',
 			id_effet:1,
+			id_forme:1,
 			isPlaying:false,
 			modeRecording:1,
 	    }
@@ -279,6 +299,8 @@ export default {
 			   if (typeof this.Fmessage.texte !== 'undefined') {
 				   this.id_effet = this.Fmessage.id_effet;
 				   this.tools_font_size = this.Fmessage.font_size;
+				   this.interlignage = this.Fmessage.interlignage;
+				   this.interlettrage = this.Fmessage.interlettrage;
 			       this.messageInit = this.Fmessage.texte;
 			       this.message = this.messageInit;
 			       this.message_son = '/upload/message_' + this.id_message + '.webm';
@@ -395,7 +417,11 @@ export default {
 				formData.append('id_message', this.id_message) ;
 				formData.append('id_user', this.id_user) ;
 				formData.append('id_effet', this.id_effet) ;
+				formData.append('color_text', this.tools_color_text) ;
+				formData.append('color_bg', this.tools_color_bg) ;
 				formData.append('font_size', this.tools_font_size) ;
+				formData.append('interlignage', this.tools_interlignage) ;
+				formData.append('interlettrage', this.tools_interlettrage) ;
 				formData.append('texte', this.message) ;
 				formData.append('duree', this.mesureTps) ;
 				formData.append('date_creation', this.date_creation) ;
@@ -594,9 +620,25 @@ export default {
 
 	    }
 	    ,
+	    initParametres: function()
+	    {
+		    this.tools_color_text = '#fff';
+		    this.tools_color_bg = '#000';
+		    this.id_effet = 1;
+		    this.id_forme = 1;
+		    this.tools_font_size = 50;
+		    this.tools_interlignage = 52;
+		    this.tools_interlettrage = 1;
+		    
+		    this.$parent.$emit('update:color_text_send', this.tools_color_text);
+		    this.$parent.$emit('update:color_bg_send', this.tools_color_bg);
+		    this.updateFontSize();
+	    }
+	    ,
 	    updateFontSize: function() {
 		    document.querySelector('.col-content-list').style.fontSize = this.tools_font_size + "px";
-		    document.querySelector('.col-content-list').style.lineHeight = (parseInt(this.tools_font_size) + 3) + "px";
+		    document.querySelector('.col-content-list').style.lineHeight = (parseInt(this.tools_interlignage) + 3) + "px";
+		    document.querySelector('.col-content-list').style.letterSpacing = (parseInt(this.tools_interlettrage)) + "px";
 
 	    
 	    }

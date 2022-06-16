@@ -12,7 +12,9 @@ export default{
 	mounted() {   
 		//localStorage.setItem('parametres', JSON.stringify(this.parametres));
 		this.parametres = JSON.parse(localStorage.getItem('parametres') || "[]") ;
-		if(typeof this.parametres.length === 'undefined') {
+		console.log("PARATITO : " + this.parametres)
+		
+		if (typeof this.parametres !== 'object') {
 			console.log("init : " + this.parametres.length)
 			this.initParametres();
 		}
@@ -55,7 +57,6 @@ export default{
 	    }
 	    ,
 	    initParametres: function() {
-		    console.log("INIT")
 	      	var para = new Object();
 		    para.color_text = '#ffffff';
 		    para.color_bg = '#000';
@@ -80,6 +81,7 @@ export default{
 	    updateParametres: function(color_text,color_bg) {
 		    this.parametres.color_text = color_text;
 		    this.parametres.color_bg = color_bg;
+		    console.log("new val : " + this.parametres.color_text)
 		    localStorage.setItem('parametres', JSON.stringify(this.parametres));
 
 
@@ -95,8 +97,9 @@ export default{
 	}
 	
 	.tools .tools-content {
-		background-color: var(--style_color_bg);
+		background-color: var(--style_color_bg) !important;
 	}
+	
 	
 	.logo svg path, svg path {
 		fill: var(--style_color_text);
@@ -154,6 +157,13 @@ export default{
   	
   	.alertBox > svg {
 	  	 stroke:var(--style_color_bg);
+  	}
+  	
+  	.editItem {
+	   color: var(--style_color_text);
+	   font-size: var(--tools_font_size)px;
+	   line-height: var(--tools_interlignage)px;
+	   letter-spacing: var(--tools_interlettrage)px;
   	}
   	
   	.editItem:focus {

@@ -42,7 +42,7 @@ select:-webkit-autofill:focus {
 
 @layer base {
   body {
-	  @apply bg-mainBg font-sans text-mainColor text-base w-full h-full;
+	  @apply bg-transparent font-sans text-mainColor text-base w-full h-full;
   }
   
   a {
@@ -234,12 +234,20 @@ select:-webkit-autofill:focus {
 	  @apply w-11 mr-12 relative z-50;
   }
   
+  .mainSpace header nav {
+	  @apply w-full;
+  }
+  
   .mainSpace header nav ul {
-	  @apply flex;
+	  @apply flex w-full;
   }
   
   .mainSpace header nav ul li:first-child {
 	  @apply mr-12;
+  }
+  
+  .mainSpace header nav ul li:last-child {
+	  @apply flex-1 text-right;
   }
   
   .mainSpace .container .content {
@@ -300,15 +308,28 @@ select:-webkit-autofill:focus {
   }
   
   .mainSpace .container .content .col-content .col-content-list .item {
-	  @apply flex w-full break-all mb-5;
+	  @apply flex w-full break-all mb-20;
   }
   
   .mainSpace .container .content .col-content .col-content-list .item .item-content {
 	  @apply flex items-center justify-between w-full;
   }
+  
+  .mainSpace .container .content .col-content .col-content-list .item .item-tools {
+	  
+  }
+  
+  .mainSpace .container .content .col-content .col-content-list .item .item-tools > div {
+	  @apply mb-3;
+  }
+  
+  .mainSpace .container .content .col-content .col-content-list .item .item-tools > div:last-child {
+	  @apply mb-0;
+  }
 
   .mainSpace .container .content .col-content .col-content-list .item .item-content .message {
 	  @apply flex-1;
+	  font-size:50px;
   }
   
   .mainSpace .container .content .col-content .col-content-list .item .item-content .zonePlay {
@@ -420,7 +441,7 @@ select:-webkit-autofill:focus {
   }
   
   .form-login h1 .logoContainer svg, .logo svg {
-  	height: 75px;
+  	height: 53px;
   	width:auto;
   }
   
@@ -540,7 +561,7 @@ select:-webkit-autofill:focus {
 }
 
 button {
-	  @apply w-full text-center text-mainColor bg-mainBg p-2 pl-4 pr-4 hover:bg-mainColor hover:text-mainBg border-mainColor border;
+	  @apply w-full text-center text-mainColor text-sm bg-mainBg p-2 pl-4 pr-4 hover:bg-mainColor hover:text-mainBg border-mainColor border;
   }
 
 

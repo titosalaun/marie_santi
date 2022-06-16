@@ -3,6 +3,7 @@
 	  
 	  <nav>
 		  <ul>
+			  <li><nuxt-link to="/typotheque" exact class="nav-link">Typothèque</nuxt-link></li>
 			  <li><nuxt-link to="/galerie" exact class="nav-link">Galerie</nuxt-link></li>
 			  <li>Infos</li>
 		  </ul>

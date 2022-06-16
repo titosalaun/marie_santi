@@ -65,18 +65,22 @@ Message.addMessage= async (connection,mysql,Fct,tools,nconf,fs,path_upload,buffe
 	var id_user = para.id_user;
 	var id_effet = para.id_effet;
 	if (id_effet == '') id_effet = 1;
+	var color_text = para.color_text;
+	var color_bg = para.color_bg;
 	var font_size = para.font_size;
 	if (font_size == '') font_size = 20;
 	var texte = para.texte;
+	var interlignage = para.interlignage;
+	var interlettrage = para.interlettrage;
 	var duree = para.duree;
 	var date_creation = para.date_creation;
 	var isNew = para.isNew;
 console.log("isNew : " + isNew)
   	if (id_message == 0) {
-	  	sql = "INSERT INTO `message` VALUES (NULL,'" + tools.sql_clean(id_user)  + "','" + tools.sql_clean(id_effet)  + "','" + tools.sql_clean(font_size)  + "','" + tools.sql_clean(texte)  + "','','0','" + tools.sql_clean(date_creation)  + "');";	 	 			 
+	  	sql = "INSERT INTO `message` VALUES (NULL,'" + tools.sql_clean(id_user)  + "','" + tools.sql_clean(id_effet)  + "','" + tools.sql_clean(color_text)  + "','" + tools.sql_clean(color_bg)  + "','" + tools.sql_clean(font_size)  + "','" + tools.sql_clean(interlignage)  + "','" + tools.sql_clean(interlettrage)  + "','" + tools.sql_clean(texte)  + "','','0','" + tools.sql_clean(date_creation)  + "');";	 	 			 
 	}
 	else {
-		sql = "UPDATE `message` set id_effet = '" + tools.sql_clean(id_effet) + "',font_size = '" + tools.sql_clean(font_size) + "',texte = '" + tools.sql_clean(texte) + "',fichier = '',duree = '0',date_creation = '" + tools.sql_clean(date_creation) + "'  where id_message = " + id_message;
+		sql = "UPDATE `message` set id_effet = '" + tools.sql_clean(id_effet) + "',color_text = '" + tools.sql_clean(color_text) + "',color_bg = '" + tools.sql_clean(color_bg) + "',font_size = '" + tools.sql_clean(font_size) + "',interlignage = '" + tools.sql_clean(interlignage) + "',interlettrage = '" + tools.sql_clean(interlettrage) + "',texte = '" + tools.sql_clean(texte) + "',fichier = '',duree = '0',date_creation = '" + tools.sql_clean(date_creation) + "'  where id_message = " + id_message;
 	}
 
 console.log(sql)

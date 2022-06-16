@@ -12,6 +12,8 @@ const _2a60f2d1 = () => interopDefault(import('../pages/list.vue' /* webpackChun
 const _06d98a46 = () => interopDefault(import('../pages/login.vue' /* webpackChunkName: "pages/login" */))
 const _4899be54 = () => interopDefault(import('../pages/register.vue' /* webpackChunkName: "pages/register" */))
 const _2b9a6b32 = () => interopDefault(import('../pages/resetPassword.vue' /* webpackChunkName: "pages/resetPassword" */))
+const _2847e7e7 = () => interopDefault(import('../pages/typotheque.vue' /* webpackChunkName: "pages/typotheque" */))
+const _17542502 = () => interopDefault(import('../pages/sauve/galerie.vue' /* webpackChunkName: "pages/sauve/galerie" */))
 const _18a0f70d = () => interopDefault(import('../pages/sauve/page_1.vue' /* webpackChunkName: "pages/sauve/page_1" */))
 const _b1423b08 = () => interopDefault(import('../pages/sauve/texte.vue' /* webpackChunkName: "pages/sauve/texte" */))
 const _3d31e72f = () => interopDefault(import('../pages/index.vue' /* webpackChunkName: "pages/index" */))
@@ -59,6 +61,14 @@ export const routerOptions = {
     path: "/resetPassword",
     component: _2b9a6b32,
     name: "resetPassword"
+  }, {
+    path: "/typotheque",
+    component: _2847e7e7,
+    name: "typotheque"
+  }, {
+    path: "/sauve/galerie",
+    component: _17542502,
+    name: "sauve-galerie"
   }, {
     path: "/sauve/page_1",
     component: _18a0f70d,

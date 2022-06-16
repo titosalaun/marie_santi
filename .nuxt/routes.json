@@ -3,77 +3,78 @@
     "name": "confirmRegister",
     "path": "/confirmRegister",
     "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/confirmRegister.vue",
-    "chunkName": "pages/confirmRegister",
-    "_name": "_c80b75c0"
+    "chunkName": "pages/confirmRegister"
   },
   {
     "name": "excel",
     "path": "/excel",
     "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/excel.vue",
-    "chunkName": "pages/excel",
-    "_name": "_7546d2d8"
+    "chunkName": "pages/excel"
   },
   {
     "name": "galerie",
     "path": "/galerie",
     "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/galerie.vue",
-    "chunkName": "pages/galerie",
-    "_name": "_21a5a610"
+    "chunkName": "pages/galerie"
   },
   {
     "name": "indexOld",
     "path": "/indexOld",
     "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/indexOld.vue",
-    "chunkName": "pages/indexOld",
-    "_name": "_11dc7d28"
+    "chunkName": "pages/indexOld"
   },
   {
     "name": "list",
     "path": "/list",
     "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/list.vue",
-    "chunkName": "pages/list",
-    "_name": "_2a60f2d1"
+    "chunkName": "pages/list"
   },
   {
     "name": "login",
     "path": "/login",
     "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/login.vue",
-    "chunkName": "pages/login",
-    "_name": "_06d98a46"
+    "chunkName": "pages/login"
   },
   {
     "name": "register",
     "path": "/register",
     "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/register.vue",
-    "chunkName": "pages/register",
-    "_name": "_4899be54"
+    "chunkName": "pages/register"
   },
   {
     "name": "resetPassword",
     "path": "/resetPassword",
     "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/resetPassword.vue",
-    "chunkName": "pages/resetPassword",
-    "_name": "_2b9a6b32"
+    "chunkName": "pages/resetPassword"
+  },
+  {
+    "name": "typotheque",
+    "path": "/typotheque",
+    "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/typotheque.vue",
+    "chunkName": "pages/typotheque"
+  },
+  {
+    "name": "sauve-galerie",
+    "path": "/sauve/galerie",
+    "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/sauve/galerie.vue",
+    "chunkName": "pages/sauve/galerie"
   },
   {
     "name": "sauve-page_1",
     "path": "/sauve/page_1",
     "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/sauve/page_1.vue",
-    "chunkName": "pages/sauve/page_1",
-    "_name": "_18a0f70d"
+    "chunkName": "pages/sauve/page_1"
   },
   {
     "name": "sauve-texte",
     "path": "/sauve/texte",
     "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/sauve/texte.vue",
-    "chunkName": "pages/sauve/texte",
-    "_name": "_b1423b08"
+    "chunkName": "pages/sauve/texte"
   },
   {
     "name": "index",
     "path": "/",
     "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/index.vue",
-    "chunkName": "pages/index",
-    "_name": "_3d31e72f"
+    "chunkName": "pages/index"
   }
 ]
