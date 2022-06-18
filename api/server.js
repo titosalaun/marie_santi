@@ -438,6 +438,17 @@ app.get('/getMessages', (req, res) => {
 	
 })
 
+app.get('/getGalerie', (req, res) => {
+	Message.getGalerie(connection,Fct,req.query, (err, data) => {
+	    if (err) {
+		    res.status(400).json({ message: err.message})
+	    } else {
+		    res.json({ liste: data.result,message:'' })
+		}
+	});
+	
+})
+
 app.get('/getMessage', (req, res) => {
 	Message.getMessage(connection,Fct,req.query, (err, data) => {
 	    if (err) {
@@ -451,6 +462,17 @@ app.get('/getMessage', (req, res) => {
 
 app.get('/delMessage', (req, res) => {
     Message.delMessage(connection,Fct,req.query, (err, data) => {
+	    if (err) {
+		    res.status(400).json({ message: err.message})
+	    } else {
+		    res.json({ id_message: data.id_message,message:'' })
+		}
+	});
+
+})
+
+app.get('/delPoster', (req, res) => {
+    Message.delPoster(connection,Fct,req.query, (err, data) => {
 	    if (err) {
 		    res.status(400).json({ message: err.message})
 	    } else {

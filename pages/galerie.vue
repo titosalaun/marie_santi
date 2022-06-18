@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" style="background-color:#383838">
 	  <div class="content">
 		  
 		  <div class="col-left">
@@ -17,30 +17,25 @@
 		  </div>
 		  
 		  <div class="col-content" v-bind:class="{ marge: isTools }">
-		  	<div class="col-content-list">
+		  	<div class="col-content-list galerie">
 
 			  	<div v-if="!messages.length">
-					<div v-show='isShowLoading'>Chargement des messages...</div>
-				  	<div v-show='isShowNoResult'>aucun message enregistré</div>
+					<div v-show='isShowLoading'>Chargement de la galerie...</div>
+				  	<div v-show='isShowNoResult'>aucun élément enregistré</div>
 			  	</div>
 				  	
-		  		<div v-for='(message, indexMessage) in messages' class="item">
-			  		<div class="item-content"  :id="'S_' + indexMessage">
-				  		<div class="zonePlay">
-					  		
-					  		<div class="content-play isLoading" @click="playSound('/upload/message_' + message.id_message + '.webm','S_' + indexMessage, indexMessage)">
-					  		<svg class="ctrlPlay"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-</svg>
-							<svg class="ctrlPause hide" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd" /></svg>
-					  		</div>
-				  		</div>
-				  		<div class="message relative"><a :href="'/?id_message=' + message.id_message">{{message.texte}}</a> <div class="progress-play"></div></div>
-				  		<div class="duration">loading...{{loadSound('/upload/message_' + message.id_message + '.webm','S_' + indexMessage, indexMessage)}}</div>
-				  		
+		  		<div v-for='(message, indexMessage) in messages' class="item-galerie">
+			  		<div><img :src="'/upload/poster_' + message.id_message + '.png'" alt="poster"></div>
+			  		<div class="item-galerie-tools">
+				  		<div>
+						  	<button class="cursor-pointer toPoster"><a :href="'/?id_message=' + message.id_message">&nbsp;&nbsp;Modifier&nbsp;&nbsp;</a></button>
+					  	</div>
+					  	<div>
+						  	<button class="cursor-pointer toPoster" @click="delPoster(message.id_message)">Supprimer</button>
+					  	</div>
 			  		</div>
 			  	</div>
+			  	
 		  	</div>
 		  			  	
 		  </div>
@@ -70,7 +65,7 @@ export default {
 	mounted() {   
 
 	 this.parametres = JSON.parse(localStorage.getItem('parametres') || "[]") ;
-	 this.getMessages();
+	 this.getGalerie();
 	 
 	 playerSound = new Tone.Player().toDestination();
 	 
@@ -92,15 +87,15 @@ export default {
 	    }
 	  },
 	methods: {
-		 getMessages: function()
+		 getGalerie: function()
 		 {
-	       axios.get(this.url_server + "/getMessages?id_user=" + this.id_user)
+	       axios.get(this.url_server + "/getGalerie")
 	       .then(response => {
 		       this.isShowLoading = false;
 		       this.messages = response.data.liste;
 		       if (this.messages.length == 0) this.isShowNoResult = true;
 		   })
-	       .catch(error => displayErreur('Erreur lors du chargement des messages'))
+	       .catch(error => displayErreur('Erreur lors du chargement de la galerie'))
 	    }
 		,
 		async logout() {
@@ -259,6 +254,18 @@ export default {
 	    getRandomNumber(min,max){
 		    return Math.floor(Math.random()*(max-min+1)+min);
 		}
+		,
+	    delPoster: function(id_message)
+		 {
+	       axios.get(this.url_server + "/delPoster?id_message=" + id_message)
+	       .then(response => {
+		       this.isShowLoading = true;
+		       this.isShowNoResult = false;
+		       this.messages = new Array();
+		       this.getGalerie();
+		   })
+	       .catch(error => displayErreur('Erreur lors de la suppression du poster'))
+	    }
 	    		
 	}
 }

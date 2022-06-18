@@ -18,10 +18,10 @@
 					  	<div class="zoneColorBg"><color-picker v-model="color_bg" @change="updateColorBg"></color-picker></div>
 				  	</div>
 				  	<div>
-					  	<button class="cursor-pointer" @click="exportGalerie();">Galerie</button>
+					  	<button class="cursor-pointer toGalerie" @click="exportGalerie();">Galerie</button>
 				  	</div>
 				  	<div>
-					  	<button class="cursor-pointer" @click="exportPoster();">Export JPG</button>
+					  	<button class="cursor-pointer toPoster" @click="exportPoster();">Export JPG</button>
 				  	</div>
 				  					  	
 			  	</div>
@@ -217,6 +217,12 @@ export default {
 	    }
 	    ,
 		exportGalerie: function() {
+			isAction('Exportation du poster en cours...',false);
+			
+			var el = document.querySelector(".toGalerie");
+			el.classList.add("cursornotallowed");
+			el.disabled = true;
+	
 			var canvas = document.getElementById("defaultCanvas0");
 			var dataURL = canvas.toDataURL("image/png");
 			console.log(dataURL)
@@ -244,6 +250,11 @@ export default {
 			  .then(response => {
 			  	   //document.querySelector('.progress-alert').style.width = "0px";	
 			       //this.id_message = response.data.id_message;
+			       
+			       var el = document.querySelector(".toGalerie");
+					el.classList.remove("cursornotallowed");
+					el.disabled = false;
+					isAction('',false);
 			       displayErreur('Votre poster a été sauvegardé dans la galerie');
 		      })
 		      .catch(err => {

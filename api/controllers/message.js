@@ -26,6 +26,20 @@ Message.getMessages = (connection,Fct,para, res) => {
     });
 };
 
+Message.getGalerie = (connection,Fct,para, res) => {
+  	var resultat = new Array();
+  	
+  sql = "select * from message where isPoster = 1 order by date_creation DESC ";
+  connection.execute(sql, function (err, result) {
+	    if (err) {
+	      res({ message: 'Erreur : lecture de la base de données : galerie' }, null);
+	      return;
+	    }
+	    
+	    res(null, { result: result });
+    });
+};
+
 
 
 Message.getMessage = (connection,Fct,para, res) => {
@@ -52,6 +66,21 @@ Message.delMessage = (connection,Fct,para, res) => {
   	connection.query(sql, function (err, result) {
 	    if (err) {
 	      res({ message: "Erreur : lecture de la suppression d'un id_message" }, null);
+	      return;
+	    }
+	    
+	    res(null, { id_message: id_message });
+    });
+};
+
+Message.delPoster = (connection,Fct,para, res) => {
+  	var id_message = para.id_message;
+
+  	var sql = "update message set isPoster=0 where id_message = " + id_message + ";";  	
+  	//sql += "delete from interview_tranche where id_interview = " + id_interview + ";";
+  	connection.query(sql, function (err, result) {
+	    if (err) {
+	      res({ message: "Erreur : lecture de la suppression du poster" }, null);
 	      return;
 	    }
 	    

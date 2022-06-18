@@ -309,6 +309,26 @@ select:-webkit-autofill:focus {
   
   .mainSpace .container .content .col-content .col-content-list .item {
 	  @apply flex w-full break-all mb-20;
+	  
+  }
+  
+  .mainSpace .container .content .col-content .col-content-list.galerie {
+	  @apply flex-wrap flex-row;
+	  
+  }
+  
+  
+  .mainSpace .container .content .col-content .col-content-list .item-galerie {
+	  @apply mr-6  mb-12 w-full;
+	  width:calc(25% - 1.5rem);
+  }
+  
+  .mainSpace .container .content .col-content .col-content-list .item-galerie .item-galerie-tools {
+	  @apply flex flex-col justify-center items-center;
+  }
+  
+  .mainSpace .container .content .col-content .col-content-list .item-galerie .item-galerie-tools > div {
+	  @apply mt-3;
   }
   
   .mainSpace .container .content .col-content .col-content-list .item .item-content {
@@ -561,7 +581,7 @@ select:-webkit-autofill:focus {
 }
 
 button {
-	  @apply w-full text-center text-mainColor text-sm bg-mainBg p-3 pl-4 pr-4 hover:bg-mainColor hover:text-mainBg border-mainColor border;
+	  @apply w-full text-center text-mainColor text-sm bg-mainBg p-2 pl-3 pr-3 hover:bg-mainColor hover:text-mainBg border-mainColor border;
   }
 
 
