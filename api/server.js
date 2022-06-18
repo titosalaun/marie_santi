@@ -472,20 +472,7 @@ app.post('/uploadSound', uploadS.single('soundBlob'), function (req, res, next) 
 
 })
 
-app.post('/addMessage', uploadS.single('soundBlob'), (req, res) => {
-	bufferSound = Buffer.from('');
-	if (typeof req.file !== 'undefined') bufferSound = Buffer.from(new Uint8Array(req.file.buffer))
-	Message.addMessage(connection,mysql,Fct,tools,nconf,fs,path_upload,bufferSound,req.body, (err, data) => {
-		//console.log("retour2 : "  + data.message)
-	    if (err) {
-		    //res.json({message:err.message})
-		    res.status(400).json({ message: err.message})
-	    } else {
-		    res.json({ id_message: data.id_message,message:'' })
-		}
-	});
 
-});
 
 
 /*Message*/
@@ -529,6 +516,21 @@ app.post('/addMessage', uploadS.single('soundBlob'), (req, res) => {
 	bufferSound = Buffer.from('');
 	if (typeof req.file !== 'undefined') bufferSound = Buffer.from(new Uint8Array(req.file.buffer))
 	Message.addMessage(connection,mysql,Fct,tools,nconf,fs,path_upload,bufferSound,req.body, (err, data) => {
+		//console.log("retour2 : "  + data.message)
+	    if (err) {
+		    //res.json({message:err.message})
+		    res.status(400).json({ message: err.message})
+	    } else {
+		    res.json({ id_message: data.id_message,message:'' })
+		}
+	});
+
+});
+
+app.post('/addPoster', uploadS.single('soundBlob'), (req, res) => {
+	bufferSound = Buffer.from('');
+	if (typeof req.file !== 'undefined') bufferSound = Buffer.from(new Uint8Array(req.file.buffer))
+	Message.addPoster(connection,mysql,Fct,tools,nconf,fs,path_upload,bufferSound,req.body, (err, data) => {
 		//console.log("retour2 : "  + data.message)
 	    if (err) {
 		    //res.json({message:err.message})

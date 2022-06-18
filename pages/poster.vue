@@ -17,6 +17,12 @@
 					  	<label class="big">Fond</label>
 					  	<div class="zoneColorBg"><color-picker v-model="color_bg" @change="updateColorBg"></color-picker></div>
 				  	</div>
+				  	<div>
+					  	<button class="cursor-pointer" @click="exportGalerie();">Galerie</button>
+				  	</div>
+				  	<div>
+					  	<button class="cursor-pointer" @click="exportPoster();">Export JPG</button>
+				  	</div>
 				  					  	
 			  	</div>
 		  	</div>
@@ -205,8 +211,49 @@ export default {
 		stopP5: function() {
 			this.radar.stopLoopP5();
 		},
-	    
-	    
+		exportPoster: function() {
+			this.radar.setFctSave();
+	    	
+	    }
+	    ,
+		exportGalerie: function() {
+			var canvas = document.getElementById("defaultCanvas0");
+			var dataURL = canvas.toDataURL("image/png");
+			console.log(dataURL)
+			
+			//var base64 = this.resultSound;
+			let formData = new FormData();
+			formData.append('poster', dataURL) ;
+			formData.append('id_message', this.id_message) ;
+			
+			const timeOutTools = setTimeout(() => {
+			axios.post(this.url_server + '/addPoster',
+			    formData,
+			    {
+			      headers: {
+			          'Content-Type': 'multipart/form-data'
+			      },
+			      onUploadProgress: function( progressEvent ) {
+				      
+				      //var val = parseInt( Math.round((progressEvent.loaded*100) / progressEvent.total ));
+				      //document.querySelector('.progress-alert').style.width = val + "px";
+				      //console.log("progress : " + val)
+			      }.bind(this)
+			    }
+			  )
+			  .then(response => {
+			  	   //document.querySelector('.progress-alert').style.width = "0px";	
+			       //this.id_message = response.data.id_message;
+			       displayErreur('Votre poster a été sauvegardé dans la galerie');
+		      })
+		      .catch(err => {
+			      if (typeof err.response.data.message === 'undefined') displayErreur(err.response.data.message)
+			      else displayErreur(err.response.data.message)
+
+		      })
+		}, 1500);
+	    	
+	    },
 	    		
 	}
 }

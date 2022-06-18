@@ -447,7 +447,7 @@ export default {
 					  		isAction('',false);
 					  	   document.querySelector('.progress-alert').style.width = "0px";	
 					       this.id_message = response.data.id_message;
-					       if (this.isNewMessage) displayErreur('Votre message a été sauvegardé dans la galerie');
+					       if (this.isNewMessage) displayErreur('Votre message a été sauvegardé dans la typothèque');
 					       else hideErreur();
 				      })
 				      .catch(err => {

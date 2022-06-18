@@ -150,6 +150,11 @@ function stopP5() {
 
 }
 
+function saveTO(val) {
+    p5.saveCanvas('myCanvas', 'jpg');
+
+}
+
 function setTexte(val,index) {
 	console.log("CHARGE TEXTE OBJ: " + index)
     mon_texte = val
@@ -239,6 +244,17 @@ export function setFctRedraw(val) {
     Redraw(val);
 
 }
+
+export function setFctSave() {
+	
+    saveTO();
+
+}
+
+
+
+
+
 
 export function setDelegate(_delegate) {
   delegate = _delegate;
