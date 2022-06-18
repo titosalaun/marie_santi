@@ -11,17 +11,10 @@ export default{
 	name: 'defaultLayout',
 	mounted() {   
 		//localStorage.setItem('parametres', JSON.stringify(this.parametres));
-		this.parametres = JSON.parse(localStorage.getItem('parametres') || "[]") ;
+		//this.parametres = JSON.parse(localStorage.getItem('parametres') || "[]") ;
 		console.log("PARATITO : " + this.parametres)
 		
-		if (typeof this.parametres !== 'object') {
-			console.log("init : " + this.parametres.length)
-			this.initParametres();
-		}
-		else {
-			console.log("no init : " + this.parametres.length)
-			this.loadParametres();
-		}
+		this.initParametres();
 	},
     watch: {
         color_text: {
@@ -63,7 +56,7 @@ export default{
 		    
 		    this.parametres = para;
 		    
-		    localStorage.setItem('parametres', JSON.stringify(this.parametres));
+		    //localStorage.setItem('parametres', JSON.stringify(this.parametres));
 		    
 		    this.loadParametres();
 	    }
@@ -73,7 +66,7 @@ export default{
 		    var para = this.parametres;
 		    this.color_text = para.color_text;
 		    this.color_bg = para.color_bg;
-		    
+		    		    
 		    this.isload = true;
 
 	    }

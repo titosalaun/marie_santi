@@ -10,13 +10,21 @@ let font;
 let fontSize;
 let mon_texte = '';
 let stringArray;
+let indexLoad;
 
 let textColor;
 let bgColor;
 
+let index_x = 0;
+let index_y = 0;
+let delta_x = 0;
+let delta_y = 0;
+let c_width = 0;
+let c_height = 0;
+
 let textToPointsOptions = {
   sampleFactor : 0.35,
-
+  separatePaths: true,
   simplifyThreshold:0
 }
 
@@ -30,42 +38,89 @@ export function main(_p5) {
   }
   
   p5.setup = _ => {
-	  console.log("SETUP : ")
-  	let canvas = p5.createCanvas(1000, 500);
+	  console.log("SETUP : " + indexLoad)
+  	let canvas = p5.createCanvas(c_width, c_height);
   	canvas.parent("p5Canvas_" + id_canvas);
 	  //microSetup(canvas)
 	  p5.textFont(font);
-	  console.log("fontSizeLoad : " + fontSize)
-	   console.log("TEXTE : "  + mon_texte)
 	  p5.textSize(fontSize);
 	  
 	  
-	stringArray = font.textToPoints(mon_texte,0, fontSize-91, fontSize, textToPointsOptions)
+	stringArray = font.textToPoints(mon_texte,0, 0, fontSize, textToPointsOptions)
 	  ///console.log("stringArray : " + stringArray)
   }
 
   p5.draw = _ => {
+	  notifyCurrentTime();
+	  
   	  //microUpdate()
+  	  
 	  p5.background(bgColor);
-	  p5.stroke(textColor)
+	  
 	  p5.textSize(fontSize);
+	  
+	  p5.stroke(textColor)
+	  
+	  console.log("DRAW : " + textColor)
 
-	  if (micLevel == 'undefined') micLevel = 0;
-	  if (micLevel == '') micLevel = 0;
+	  var pos_x = 0
+	  var pos_y = 0
+	  var old_x = 0;
+	  var old_y = 0;
+	  var isLigne = false;
 	  //console.log("micLevel : " + micLevel)
 	  stringArray.forEach(
 	    (element, indexPosition) =>{
-	
-	     p5.line(element.x, element.y, element.x+micLevel*250, element.y)
-		 p5.line(element.x, element.y, element.x-micLevel*250, element.y)
-		 p5.line(element.x, element.y, element.x, element.y+micLevel*250)
-		 p5.line(element.x, element.y, element.x, element.y-micLevel*250)
-	
+		    //if (indexPosition < 500) {
+				//console.log("indexPosition : " +pos_x)
+				if (indexPosition == 0) {
+					old_x = element.x;
+					old_y = element.y;
+				}
+				
+				if (pos_x > 600) {
+					old_x = element.x;					
+					
+					index_y += delta_y;
+					index_x = delta_x;
+					isLigne = true;
+				}
+				
+				pos_x =  element.x - old_x;
+				pos_y = element.y - old_y;
+				
+				if (indexPosition == 0) {
+					isLigne = false;
+					
+				}
+				
+				
+				//else {
+					//pos_x += old_x - element.x;
+					//pos_y += old_y - element.y;
+				//}
+			//}
+			
+			
+			     p5.line(pos_x+index_x, pos_y+index_y, pos_x+micLevel*250+index_x, pos_y+index_y)
+				 p5.line(pos_x+index_x, pos_y+index_y, pos_x-micLevel*250+index_x, pos_y+index_y)
+				 p5.line(pos_x+index_x, pos_y+index_y, pos_x+index_x, pos_y+micLevel*250+index_y)
+				 p5.line(pos_x+index_x, pos_y+index_y, pos_x+index_x, pos_y-micLevel*250+index_y)
+		 
 	
 	
 	    }
 	  )
+	  
+	  //p5.resizeCanvas(1000, fontSize-91, true);
   }
+}
+
+function Redraw(textColor) {
+  //p5.resizeCanvas(c_width, c_height);
+  console.log("REDRAW")
+  p5.stroke(textColor)
+  p5.redraw();
 }
 
 function microSetup(canvas) {
@@ -79,14 +134,6 @@ function microUpdate() {
 
 }
 
-function notifyCurrentTime() {
-  if (delegate !== undefined) {
-    const message = p5.hour() + ":" + p5.minute() + ":" + p5.second();
-
-    delegate(message);
-  }
-  
-}
 
 function setSound(val) {
     micLevel = val
@@ -103,28 +150,30 @@ function stopP5() {
 
 }
 
-function setTexte(val) {
-	console.log("CHARGE TEXTE : " + val)
+function setTexte(val,index) {
+	console.log("CHARGE TEXTE OBJ: " + index)
     mon_texte = val
-
+	indexLoad = index;
 }
 
 function setTextColor(val)
 {
-	console.log("CHARGE textColor : " + val)
+	console.log("COLORVAL : " + val)
 	textColor = val;
 }
 
 function setBgColor(val)
 {
-	console.log("CHARGE bgColor : " + val)
 	bgColor = val;
 }
 
 function setFontSize(val)
 {
 	fontSize = parseInt(val);
-	console.log("SIZE : " + fontSize)
+	index_x = parseInt(val/2);
+	index_y = parseInt(val);
+	delta_x = 0 ;
+	delta_y = index_y;
 }
 
 function setCanvasId(id)
@@ -133,14 +182,21 @@ function setCanvasId(id)
 	
 }
 
+function setCanvasSize(w_width,w_height)
+{
+	c_width = w_width;
+	c_height = w_height;
+}
+
 
 export function startLoopP5() {
     startP5();
+    tito();
 
 }
 
-export function setFctTexte(val) {
-    setTexte(val);
+export function setFctTexte(val,index) {
+    setTexte(val,index);
 
 }
 
@@ -155,6 +211,7 @@ export function stopLoopP5() {
 }
 
 export function setFctTextColor(val) {
+	
     setTextColor(val);
 
 }
@@ -171,10 +228,29 @@ export function setFctFontSize(val) {
 
 export function setFctCanvasId(id) {
     setCanvasId(id);
+}
+
+export function setFctCanvasSize(w_width,w_height) {
+    setCanvasSize(w_width,w_height);
+}
+
+export function setFctRedraw(val) {
+	
+    Redraw(val);
 
 }
 
 export function setDelegate(_delegate) {
   delegate = _delegate;
 }
+
+function notifyCurrentTime() {
+  if (delegate !== undefined) {
+    const message = p5.hour() + ":" + p5.minute() + ":" + p5.second();
+
+    delegate(message);
+  }
+}
+
+
 

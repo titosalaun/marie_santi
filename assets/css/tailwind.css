@@ -268,7 +268,7 @@ select:-webkit-autofill:focus {
   }
   
   .mainSpace .container .content .col-content {
-	 @apply w-full pt-[4.5rem];
+	 @apply w-full pt-[3rem];
   }
   
   .mainSpace .container .content .col-content.marge {
@@ -385,7 +385,7 @@ select:-webkit-autofill:focus {
   }
   
   .mainSpace input[type=number],input[type=text],input[type=password],input[type=email], textarea, select {
-		  @apply w-full bg-transparent text-base text-mainColor placeholder-mainColor border border-mainColor p-1 focus:border focus:outline-none focus:ring-0 focus-within:border-transparent placeholder-opacity-50;
+		  @apply w-full bg-transparent text-base text-mainColor placeholder-mainColor border border-mainColor p-3 focus:border focus:outline-none focus:ring-0 focus-within:border-transparent placeholder-opacity-50;
   }
   
   .mainSpace   label {
@@ -561,7 +561,7 @@ select:-webkit-autofill:focus {
 }
 
 button {
-	  @apply w-full text-center text-mainColor text-sm bg-mainBg p-2 pl-4 pr-4 hover:bg-mainColor hover:text-mainBg border-mainColor border;
+	  @apply w-full text-center text-mainColor text-sm bg-mainBg p-3 pl-4 pr-4 hover:bg-mainColor hover:text-mainBg border-mainColor border;
   }
 
 

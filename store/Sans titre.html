@@ -1,0 +1,96 @@
+let font, points, pointsInPaths, pointsInGlyphs;
+let txt = "OP"
+
+function preload() {
+  font = loadFont('roboto-mono_regular.otf');
+}
+
+function setup() {
+  createCanvas(200, 500, WEBGL);
+  stroke(0);
+  strokeWeight(0.5);
+
+  let fSize = 70;
+
+  // get points as it is
+  points = font.textToPoints(txt, 0, 0, fSize, {
+    sampleFactor: 5,
+    simplifyThreshold: 0.1,
+  });
+
+  // get points in paths
+  pointsInPaths = font.textToPoints(txt, 0, 0, fSize, {
+    sampleFactor: 5,
+    simplifyThreshold: 0.1,
+    separatePaths: true // new option
+  });
+
+  // get points in paths
+  pointsInGlyphs = font.textToPoints(txt, 0, 0, fSize, {
+    sampleFactor: 5,
+    simplifyThreshold: 0.1,
+    separateGlyphs: true // new option
+  });
+  noFill();
+  stroke(0);
+  angleMode(DEGREES);
+}
+
+function draw() {
+  background(240);
+  translate(0, -height / 2);
+
+  // current textToPoints() w/ [points]
+  push();
+  translate(0, height * 0.25);
+  rotateY(frameCount);
+  beginShape();
+  for (let i = 0; i < points.length - 1; i++) {
+    let p = points[i];
+    vertex(p.x, p.y);
+
+    // simulate flag for end of path
+    let p2 = points[i + 1];
+    if (dist(p.x, p.y, p2.x, p2.y) > 27) {
+      // i think this is really tricky logic to type:
+      endShape(CLOSE);
+      rotateY(frameCount);
+      beginShape();
+    }
+  }
+  endShape(CLOSE);
+  pop();
+
+  // separatePaths:true w/ [paths][points]
+  push();
+  translate(0, height * 0.5);
+  for (let i = 0; i < pointsInPaths.length; i++) {
+    rotateY(frameCount);
+    strokeWeight(map(i, 0, pointsInPaths.length - 1, 3, 1));
+    beginShape();
+    for (let j = 0; j < pointsInPaths[i].length; j++) {
+      let p = pointsInPaths[i][j];
+      vertex(p.x, p.y);
+    }
+    endShape(CLOSE);
+  }
+  pop();
+
+  // separateGlyphs:true w/ [glyphs][paths][points]
+  push();
+  translate(0, height * 0.75);
+  for (let i = 0; i < pointsInGlyphs.length; i++) {
+    rotateY(frameCount);
+    for (let j = 0; j < pointsInGlyphs[i].length; j++) {
+      rotateY(frameCount);
+      strokeWeight(map(j, 0, pointsInGlyphs[i].length - 1, 3, 1));
+      beginShape();
+      for (let k = 0; k < pointsInGlyphs[i][j].length; k++) {
+        let p = pointsInGlyphs[i][j][k];
+        vertex(p.x, p.y);
+      }
+      endShape(CLOSE);
+    }
+  }
+  pop();
+}

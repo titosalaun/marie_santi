@@ -81,7 +81,7 @@
 		  	<div class="col-content-list">
 			  		<div class="item" style="display:block">
 				  		<div @click="clickEdit"  @input="clickEdit" ref="editItem" class="editItem" contenteditable v-html="messageInit"></div>
-				  		<div style="display:block;width: 100%;height:auto" id="p5Canvas" class="canvas-area hidden"></div>
+				  		<div style="display:block;width: 100%;height:auto" id="p5Canvas_99" class="canvas-area hidden"></div>
 			  		</div>
 		  	</div>
 		  			  	
@@ -342,7 +342,7 @@ export default {
 				document.querySelector('.canvas-area').classList.add("hidden");
 				document.querySelector('.editItem').classList.remove("hidden");
 				
-				document.querySelector('#p5Canvas').removeChild(document.querySelector('canvas'));
+				document.querySelector('#p5Canvas_99').removeChild(document.querySelector('canvas'));
 				
 				this.ps = null;
 			}
@@ -360,6 +360,7 @@ export default {
 				this.ps = new P5(this.radar.main)
     // NOTE: p5.jsからのコールバックを受け取る
     this.radar.setDelegate(this.callbackOnP5);
+    this.radar.setFctCanvasId(99)
     this.radar.setFctSound(0)
     console.log("couleyr : " + this.tools_color_text)
     this.radar.setFctTextColor(this.tools_color_text)

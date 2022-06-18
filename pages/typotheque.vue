@@ -27,11 +27,11 @@
 		  		<div v-for='(message, indexMessage) in messages' class="item" v-for-callback="{key: indexMessage, array: messages, callback: callback}">
 			  		<div class="item-content"  :id="'S_' + indexMessage">
 				  		<div class="message relative" :style="{ 'color': message.color_text }">
-					  		<a :href="'/?id_message=' + message.id_message">{{message.texte}}</a> 
+					  		<a :href="'/?id_message=' + message.id_message"> {{tito}} {{message.texte}}</a> 
 					  		<div style="display:block;width: 100%;height:auto" :id="'p5Canvas_' + message.id_message" class="canvas-area"></div>
 					  	</div>
 				  		<div class="item-tools">
-					  		<div><button class="getPoster" @click="getPoster(message.id_message,$event)">Créer un poster</button></div>
+					  		<div><button class="getPoster"><a :href="'/poster?id=' + message.id_message">Créer un poster</a></button></div>
 					  		<div><button><a :href="'/?id_message=' + message.id_message">Modifier la font</a></button></div>
 					  		<div><button @click="delMessage(message.id_message)">Supprimer</button></div>
 				  		</div>
@@ -83,7 +83,7 @@ export default {
 	    return {
 		    script: null,
 			ps: null,
-			radar:'',
+			radar:new Array(),
 		    url_server:this.$store.state.url_server,
 		    id_user: this.$auth.user.id,
 		    parametres:'',
@@ -95,10 +95,13 @@ export default {
 			isPause:false,
 			myCurrentTimeSave:0,
 			valSetTimeout:0,
+			indexLoad:0,
+			tito:'',
 	    }
 	  },
 	  directives: {
     forCallback(el, binding) {
+	    
       let element = binding.value
       var key = element.key
       var len = 0
@@ -115,7 +118,7 @@ export default {
 
       if (key == len - 1) {
         if (typeof element.callback === 'function') {
-          element.callback(element.array)
+          element.callback(0,element.array)
         }
       }
     }
@@ -307,37 +310,41 @@ export default {
 		    return Math.floor(Math.random()*(max-min+1)+min);
 		}
 		,
-		loadMessage: function(id_message,id_effet,message,color_text,color_bg,font_size) {
+		callbackOnP5: function(timeStr) {
+		    this.tito = timeStr;
+		  }
+		,
+		loadMessage: function(elements,index,id_message,id_effet,message,color_text,color_bg,font_size) {
 			console.log("id_effet : " + id_effet)
-			this.selectEffet(id_effet);
+			this.radar[index] = this.selectEffet(index,id_effet);
 			
-			this.ps = new P5(this.radar.main)
-		    this.radar.setDelegate(this.callbackOnP5);
-		    this.radar.setFctCanvasId(id_message)
-		    this.radar.setFctSound(0)
-		    this.radar.setFctTextColor(color_text)
-		    this.radar.setFctBgColor(color_bg)
-		    this.radar.setFctFontSize(font_size)
+			this.ps = new P5(this.radar[index].main)
+		    this.radar[index].setDelegate(this.callbackOnP5);
+		    this.radar[index].setFctCanvasId(id_message)
+		    this.radar[index].setFctSound(0)
+		    this.radar[index].setFctTextColor(color_text)
+		    this.radar[index].setFctBgColor(color_bg)
+		    this.radar[index].setFctFontSize(font_size)
     
-			this.radar.setFctTexte(message);
+			this.radar[index].setFctTexte(message,index);
+			
+			index++;
+			//if (index < 2) this.callback(index,elements)
+			
 			//this.startP5();
 		}
 		,
-		selectEffet: function(id_effet)
+		selectEffet: function(index,id_effet)
 		{
-			if (id_effet == 1) this.radar = effet_1;
-			if (id_effet == 2) this.radar = effet_2;
-			if (id_effet == 3) this.radar = effet_3;
+			if (id_effet == 1) this.radar[index] = effet_1;
+			if (id_effet == 2) this.radar[index] = effet_2;
+			if (id_effet == 3) this.radar[index] = effet_3;
+			
+			return this.radar[index];
 		}
 		,
-		callback(elements) {			
-			for( var i=0; i< elements.length; i++ )
-			{
-				console.log("BOUVLE : " + elements[i].texte)
-				//document.querySelector('#p5Canvas_' + elements[i].id_message).removeChild(document.querySelector('canvas'));
-				this.loadMessage(elements[i].id_message,elements[i].id_effet,elements[i].texte,elements[i].color_text,elements[i].color_bg,elements[i].font_size);
-			}
-			//this.loadMessage(elements.id_message,elements.id_effet,elements.message,elements.color_text,elements.color_bg,elements.font_size);
+		callback(index,elements) {	
+				//this.loadMessage(elements,index,elements[index].id_message,elements[index].id_effet,elements[index].texte,elements[index].color_text,elements[index].color_bg,elements[index].font_size);
 	    },
 	    		
 	}
