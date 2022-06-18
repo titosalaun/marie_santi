@@ -28,6 +28,13 @@
     "_name": "_11dc7d28"
   },
   {
+    "name": "information",
+    "path": "/information",
+    "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/information.vue",
+    "chunkName": "pages/information",
+    "_name": "_1a840ec9"
+  },
+  {
     "name": "list",
     "path": "/list",
     "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/list.vue",
@@ -42,18 +49,10 @@
     "_name": "_06d98a46"
   },
   {
+    "name": "poster",
     "path": "/poster",
     "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/poster.vue",
     "chunkName": "pages/poster",
-    "children": [
-      {
-        "name": "poster",
-        "path": "",
-        "component": "/Users/christophesalaun/Documents/www/diplome_2022/marie_santi/pages/poster/index.vue",
-        "chunkName": "pages/poster/index",
-        "_name": "_00e9abc3"
-      }
-    ],
     "_name": "_839bd580"
   },
   {

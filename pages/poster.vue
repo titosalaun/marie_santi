@@ -70,7 +70,9 @@ export default {
 	}
 	,
 	mounted() {   
-
+     var id = 0;
+	 localStorage.setItem('id_message', JSON.stringify(id));
+	 
 	 this.parametres = JSON.parse(localStorage.getItem('parametres') || "[]") ;
 	 
 	 
@@ -265,6 +267,11 @@ export default {
 		}, 1500);
 	    	
 	    },
+		goHome: function(id_message)
+		{
+			localStorage.setItem('id_message', JSON.stringify(id_message));
+			document.location = '/'
+		}
 	    		
 	}
 }

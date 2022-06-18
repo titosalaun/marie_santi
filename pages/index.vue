@@ -3,10 +3,9 @@
 	  <div class="content">
 		  
 		  <div class="col-left">
-		  	<div class="logo">
-			  	<nuxt-link to="/">
+		  	<div @click="goHome(0)" class="logo">
 			  	<svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 776.86 861.5"><path d="M291.29,701.18c0,92.18,68.41,131,165.81,131,112.47,0,162.9-51,162.9-163.49V558.56H444.92C360.86,558.56,291.29,614.22,291.29,701.18ZM151.57,725.53c0-113,68.41-197.69,176.24-208.13V490.15c-84.06-10.43-146.67-87-146.67-179.14,0-133.34,130.44-215.66,280-215.66C622.9,95.35,740,173,747,332.46H611.89c-7-80-60.87-117.1-149-117.1-83.48,0-141.45,38.84-141.45,114.78s55.65,117.11,139.14,117.11H928.43V558.56H755.08c0,266.11-3.47,265,5.8,273.64,8.12,7.54,11.6,5.22,167.55,5.22V945.25c-207.55,0-224.94,5.8-263.21-34.2-22.61-23.77-21.45-74.79-21.45-74.79H622.9c-34.78,86.38-107.83,120.59-203.49,120.59C265.2,956.85,151.57,877.42,151.57,725.53Z" transform="translate(-151.57 -95.35)"/></svg>
-			  	</nuxt-link></div>
+			  	</div>
 		  	<div class="tools">
 			  	<div class="tools-content"  v-bind:class="{ open: isTools }">
 				  	<div>
@@ -67,14 +66,7 @@
 				  	<div v-show="isRecord" class="mesure-temps">Durée : {{mesureTps}}</div>
 			  	</div>
 			  	<div>
-				  	<div v-show="displayRecord"><button class="btRecord" @click="beforeRecording"  @mouseover="recordOver = true" @mouseleave="recordOver = false" v-bind:class="{ 'animate-onWait': !recordOver }">record</button>
-					  					  	<div class="pt-3 text-sm">{{displayActiveSound}}</div>
-
-				  	</div>
 				  	
-				  	<div v-show="id_message != 0"><button class="btRecord btPlay" @click="playMessage">play</button>
-
-				  	</div>
 				  </div>
 		    </div>
 		  	<div id="content"></div>
@@ -95,6 +87,14 @@
 				</select>
 			</div>
 		  	<!--<div v-show="displayStart" class="startMic cursor-pointer" @click="startCapture()">start</div>-->
+		  	<div v-show="displayRecord"><button class="btRecord" @click="beforeRecording"  @mouseover="recordOver = true" @mouseleave="recordOver = false" v-bind:class="{ 'animate-onWait': !recordOver }">record</button>
+					  					  	<div class="pt-3 text-sm">{{displayActiveSound}}</div>
+
+				  	</div>
+				  	
+				  	<div v-show="id_message != 0"><button class="btRecord btPlay" @click="playMessage">play</button>
+
+				  	</div>
 		  	<div v-show="displaySave" class="cursor-pointer" @click="addMessage()">save</div>
 		  	<div v-show="displayReset" class="cursor-pointer" @click="reset(true)">reset</div>
 		  	<div v-show="displayNew" class="cursor-pointer" @click="newMessage()">new</div>
@@ -191,10 +191,7 @@ export default {
   }
   ,
   created() {	 
-	 if (typeof this.$route.query.id_message === 'undefined') {
-		 this.id_message = 0;
-	 }
-	 else  this.id_message = parseInt(this.$route.query.id_message);
+	 
 	 	 	
 	 	 console.log("ID : " + this.id_message)
   }
@@ -268,10 +265,17 @@ export default {
 	  }
 	,
 	mounted() {   
+		
+		var id = JSON.parse(localStorage.getItem('id_message') || "[]") ;
+	 console.log("id = " + id)
+	 if (typeof id === 'undefined') {
+		 this.id_message = 0;
+	 }
+	 else  this.id_message = id;
 
 	 this.parametres = JSON.parse(localStorage.getItem('parametres') || "[]") ;
 	 
-	 this.loadParametres();
+	 if (this.id_message == 0) this.loadParametres();
 	 this.initPage();
 	 this.initDisplayErreur();
 	 this.getSounds();
@@ -299,11 +303,27 @@ export default {
 			   if (typeof this.Fmessage.texte !== 'undefined') {
 				   this.id_effet = this.Fmessage.id_effet;
 				   this.tools_font_size = this.Fmessage.font_size;
+				   this.tools_color_text = this.Fmessage.color_text;
+				   this.tools_color_bg = this.Fmessage.color_bg;
+				   console.log("ici : " + this.tools_color_text)
 				   this.interlignage = this.Fmessage.interlignage;
 				   this.interlettrage = this.Fmessage.interlettrage;
 			       this.messageInit = this.Fmessage.texte;
 			       this.message = this.messageInit;
 			       this.message_son = '/upload/message_' + this.id_message + '.webm';
+			       
+			       this.parametres.color_text = this.tools_color_text;
+				   this.parametres.color_bg = this.tools_color_bg;
+				   localStorage.setItem('parametres', JSON.stringify(this.parametres));
+			       
+			       //this.loadParametres();
+			       
+			       document.querySelector('.zoneColorText .color-block .value').innerHTML = this.tools_color_text;
+		    document.querySelector('.zoneColorBg .color-block .value').innerHTML = this.tools_color_bg;
+			       
+			       this.updateColorText();
+			       this.updateColorBg();
+			       this.updateFontSize();
 			
 			    }
 		   })
@@ -358,7 +378,7 @@ export default {
 				
 				
 				this.ps = new P5(this.radar.main)
-    // NOTE: p5.jsからのコールバックを受け取る
+    this.radar.setFctCanvasSize(window.innerWidth-200,900);
     this.radar.setDelegate(this.callbackOnP5);
     this.radar.setFctCanvasId(99)
     this.radar.setFctSound(0)
@@ -592,11 +612,11 @@ export default {
 		}	    
 		,
 	    updateColorText: function() {
-		    clearTimeout(this.timeOutTools);
-		    this.timeOutTools = setTimeout(function () {  
+		    //clearTimeout(this.timeOutTools);
+		    //this.timeOutTools = setTimeout(function () {  
 			    this.updateColorPicker();
 			    this.$parent.$emit('update:color_text_send', this.tools_color_text);
-		    }.bind(this), 100)
+		    //}.bind(this), 100)
 	    }
 	    ,
 	    updateColorBg: function() {
@@ -614,6 +634,7 @@ export default {
 	    ,
 	    loadParametres: function() {
 		    var para = this.parametres;
+		    console.log("tito color : " + para.color_text)
 		    this.tools_color_text = para.color_text;
 		    this.tools_color_bg = para.color_bg;
 		    		    
@@ -1019,6 +1040,12 @@ export default {
 		    this.verifDisplayAddSound();
 		    
 	    }
+	    ,
+		goHome: function(id_message)
+		{
+			localStorage.setItem('id_message', JSON.stringify(id_message));
+			document.location = '/'
+		}
 		
 	}
 

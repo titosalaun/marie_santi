@@ -268,7 +268,7 @@ select:-webkit-autofill:focus {
   }
   
   .mainSpace .container .content .col-content {
-	 @apply w-full pt-[3rem];
+	 @apply w-full pt-[4.5rem];
   }
   
   .mainSpace .container .content .col-content.marge {
@@ -350,6 +350,7 @@ select:-webkit-autofill:focus {
   .mainSpace .container .content .col-content .col-content-list .item .item-content .message {
 	  @apply flex-1;
 	  font-size:50px;
+	  line-height:52px;
   }
   
   .mainSpace .container .content .col-content .col-content-list .item .item-content .zonePlay {
@@ -378,11 +379,11 @@ select:-webkit-autofill:focus {
   }
   
   .mainSpace .tools {
-	  @apply fixed left-0 top-0  h-screen z-0 flex justify-center  pl-6;
+	  @apply fixed left-0 top-0 mt-[5.5rem] h-screen z-0 flex justify-center  pl-6;
   }
 
   .mainSpace .tools .tools-content {
-	  @apply flex-1 mt-[5.5rem] w-40 hidden pr-2 bg-mainBg; 
+	  @apply flex-1  w-40 hidden pr-2 bg-mainBg; 
   }
   
   .mainSpace .tools .tools-content.open {
@@ -397,6 +398,14 @@ select:-webkit-autofill:focus {
 	  @apply hidden !important;
   }
   
+  .mainSpace .texte {
+	  font-size:78px;
+	  line-height: 80px;
+  }
+  
+  .mainSpace {
+	  @apply  cursor-pointer;
+  }
   
   
   .tools .tools-nav {
@@ -466,6 +475,7 @@ select:-webkit-autofill:focus {
   }
   
    .logo svg {
+	
   	height: 30px;
   	width:auto;
   }

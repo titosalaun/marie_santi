@@ -11,7 +11,7 @@ export default{
 	name: 'defaultLayout',
 	mounted() {   
 		//localStorage.setItem('parametres', JSON.stringify(this.parametres));
-		//this.parametres = JSON.parse(localStorage.getItem('parametres') || "[]") ;
+		this.parametres = JSON.parse(localStorage.getItem('parametres') || "[]") ;
 		console.log("PARATITO : " + this.parametres)
 		
 		this.initParametres();
@@ -20,14 +20,14 @@ export default{
         color_text: {
             handler(newValue) {
 	            this.updateParametres(newValue,this.color_bg);
-	             console.log("watch2 : " + newValue + " / " + this.color_bg)
+	             console.log("colorTexte : " + newValue)
             }, deep: true
         }
         ,
         color_bg: {
             handler(newValue) {
 	            this.updateParametres(this.color_text,newValue);
-	             console.log("watch2 : " + this.color_text + " / " + newValue)
+	             console.log("bgTexte : " + this.newValue)
             }, deep: true
         }
     }
@@ -50,13 +50,20 @@ export default{
 	    }
 	    ,
 	    initParametres: function() {
-	      	var para = new Object();
-		    para.color_text = '#ffffff';
-		    para.color_bg = '#000';
 		    
-		    this.parametres = para;
+		    if (typeof this.parametres === 'undefined') {
+	      		var para = new Object();
+		  		para.color_text = '#ffffff';
+		  		para.color_bg = '#000';
 		    
-		    //localStorage.setItem('parametres', JSON.stringify(this.parametres));
+		  		this.parametres = para;
+		    
+		  		localStorage.setItem('parametres', JSON.stringify(this.parametres));
+		  	}
+		  	else {
+			  	this.color_text = this.parametres.color_text;
+			  	this.color_bg = this.parametres.color_bg; 
+		  	}
 		    
 		    this.loadParametres();
 	    }
@@ -74,6 +81,9 @@ export default{
 	    updateParametres: function(color_text,color_bg) {
 		    this.parametres.color_text = color_text;
 		    this.parametres.color_bg = color_bg;
+		    
+		    this.color_text = color_text;
+		    this.color_bg = color_bg;
 		    console.log("new val : " + this.parametres.color_text)
 		    localStorage.setItem('parametres', JSON.stringify(this.parametres));
 

@@ -196,7 +196,6 @@ function setCanvasSize(w_width,w_height)
 
 export function startLoopP5() {
     startP5();
-    tito();
 
 }
 

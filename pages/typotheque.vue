@@ -26,13 +26,13 @@
 				  	
 		  		<div v-for='(message, indexMessage) in messages' class="item" v-for-callback="{key: indexMessage, array: messages, callback: callback}">
 			  		<div class="item-content"  :id="'S_' + indexMessage">
-				  		<div class="message relative" :style="{ 'color': message.color_text }">
-					  		<a :href="'/?id_message=' + message.id_message"> {{tito}} {{message.texte}}</a> 
+				  		<div @click="goHome(message.id_message)" class="message relative cursor-pointer" :style="{ 'color': message.color_text }">
+					  		 {{tito}} {{message.texte}} 
 					  		<div style="display:block;width: 100%;height:auto" :id="'p5Canvas_' + message.id_message" class="canvas-area"></div>
 					  	</div>
 				  		<div class="item-tools">
 					  		<div><button class="getPoster"><a :href="'/poster?id=' + message.id_message">Créer un poster</a></button></div>
-					  		<div><button><a :href="'/?id_message=' + message.id_message">Modifier la font</a></button></div>
+					  		<div><button @click="goHome(message.id_message)">Modifier la font</button></div>
 					  		<div><button @click="delMessage(message.id_message)">Supprimer</button></div>
 				  		</div>
 				  		
@@ -69,7 +69,8 @@ export default {
     ...mapGetters(['isAuthenticated', 'loggedInfont']),
   },
 	mounted() {   
-
+	 var id = 0;
+	 localStorage.setItem('id_message', JSON.stringify(id));
 	 this.parametres = JSON.parse(localStorage.getItem('parametres') || "[]") ;
 	 this.getMessages();
 	 
@@ -346,6 +347,11 @@ export default {
 		callback(index,elements) {	
 				//this.loadMessage(elements,index,elements[index].id_message,elements[index].id_effet,elements[index].texte,elements[index].color_text,elements[index].color_bg,elements[index].font_size);
 	    },
+		goHome: function(id_message)
+		{
+			localStorage.setItem('id_message', JSON.stringify(id_message));
+			document.location = '/'
+		}
 	    		
 	}
 }

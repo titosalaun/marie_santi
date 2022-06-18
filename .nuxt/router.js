@@ -8,10 +8,10 @@ const _c80b75c0 = () => interopDefault(import('../pages/confirmRegister.vue' /* 
 const _7546d2d8 = () => interopDefault(import('../pages/excel.vue' /* webpackChunkName: "pages/excel" */))
 const _21a5a610 = () => interopDefault(import('../pages/galerie.vue' /* webpackChunkName: "pages/galerie" */))
 const _11dc7d28 = () => interopDefault(import('../pages/indexOld.vue' /* webpackChunkName: "pages/indexOld" */))
+const _1a840ec9 = () => interopDefault(import('../pages/information.vue' /* webpackChunkName: "pages/information" */))
 const _2a60f2d1 = () => interopDefault(import('../pages/list.vue' /* webpackChunkName: "pages/list" */))
 const _06d98a46 = () => interopDefault(import('../pages/login.vue' /* webpackChunkName: "pages/login" */))
 const _839bd580 = () => interopDefault(import('../pages/poster.vue' /* webpackChunkName: "pages/poster" */))
-const _00e9abc3 = () => interopDefault(import('../pages/poster/index.vue' /* webpackChunkName: "pages/poster/index" */))
 const _4899be54 = () => interopDefault(import('../pages/register.vue' /* webpackChunkName: "pages/register" */))
 const _2b9a6b32 = () => interopDefault(import('../pages/resetPassword.vue' /* webpackChunkName: "pages/resetPassword" */))
 const _2847e7e7 = () => interopDefault(import('../pages/typotheque.vue' /* webpackChunkName: "pages/typotheque" */))
@@ -48,6 +48,10 @@ export const routerOptions = {
     component: _11dc7d28,
     name: "indexOld"
   }, {
+    path: "/information",
+    component: _1a840ec9,
+    name: "information"
+  }, {
     path: "/list",
     component: _2a60f2d1,
     name: "list"
@@ -58,11 +62,7 @@ export const routerOptions = {
   }, {
     path: "/poster",
     component: _839bd580,
-    children: [{
-      path: "",
-      component: _00e9abc3,
-      name: "poster"
-    }]
+    name: "poster"
   }, {
     path: "/register",
     component: _4899be54,

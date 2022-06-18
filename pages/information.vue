@@ -1,5 +1,5 @@
 <template>
-  <div class="container" style="background-color:#383838">
+  <div class="container">
 	  <div class="content">
 		  
 		  <div class="col-left">
@@ -17,24 +17,9 @@
 		  </div>
 		  
 		  <div class="col-content" v-bind:class="{ marge: isTools }">
-		  	<div class="col-content-list galerie">
+		  	<div class="texte">
 
-			  	<div v-if="!messages.length">
-					<div v-show='isShowLoading'>Chargement de la galerie...</div>
-				  	<div v-show='isShowNoResult'>aucun élément enregistré</div>
-			  	</div>
-				  	
-		  		<div v-for='(message, indexMessage) in messages' class="item-galerie">
-			  		<div><img :src="'/upload/poster_' + message.id_message + '.png'" alt="poster"></div>
-			  		<div class="item-galerie-tools">
-				  		<div>
-						  	<button @click="goHome(message.id_message)" class="cursor-pointer toPoster">&nbsp;&nbsp;Modifier&nbsp;&nbsp;</button>
-					  	</div>
-					  	<div>
-						  	<button class="cursor-pointer toPoster" @click="delPoster(message.id_message)">Supprimer</button>
-					  	</div>
-			  		</div>
-			  	</div>
+			  	Le projet Ampersound vise à traduire visuellement le son via  la typographie. Grâce à cette plateforme conçue comme un outil de création, chaque son peut être retranscrit graphiquement sous forme de posters animés.
 			  	
 		  	</div>
 		  			  	
@@ -63,10 +48,9 @@ export default {
     ...mapGetters(['isAuthenticated', 'loggedInfont']),
   },
 	mounted() {   
-		
-		var id = 0;
+	 var id = 0;
 	 localStorage.setItem('id_message', JSON.stringify(id));
-
+	 
 	 this.parametres = JSON.parse(localStorage.getItem('parametres') || "[]") ;
 	 this.getGalerie();
 	 
