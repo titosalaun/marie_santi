@@ -18,6 +18,18 @@
 					  	<div class="zoneColorBg"><color-picker v-model="color_bg" @change="updateColorBg"></color-picker></div>
 				  	</div>
 				  	<div>
+					  	<label>Taille de la font : {{tools_font_size}}</label>
+					  	<input class="slider" type="range" @input="updateFontSize()" id="font_size" min="10" max="200" v-model="font_size" />
+				  	</div>
+				  	<div>
+					  	<label>Interlettrage : {{tools_interlettrage}}</label>
+					  	<input class="slider" type="range" @input="updateFontSize()" id="interlettrage" min="-10" max="40" v-model="interlettrage" />
+				  	</div>
+				  	<div>
+					  	<label>Interlignage : {{tools_interlignage}}</label>
+					  	<input class="slider" type="range" @input="updateFontSize()" id="interlignage" min="10" max="200" v-model="interlignage" />
+				  	</div>
+				  	<div>
 					  	<button class="cursor-pointer toGalerie" @click="exportGalerie();">Galerie</button>
 				  	</div>
 				  	<div>
@@ -108,6 +120,8 @@ export default {
 			color_text:'',
 			color_bg:'',
 			font_size:'',
+			interlignage:'',
+			interlettrage:'',
 			isTools:true,
 			timeOutTools:0,
 	    }

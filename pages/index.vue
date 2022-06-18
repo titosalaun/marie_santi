@@ -95,8 +95,9 @@
 				  	<div v-show="id_message != 0"><button class="btRecord btPlay" @click="playMessage">play</button>
 
 				  	</div>
-		  	<div v-show="displaySave" class="cursor-pointer" @click="addMessage()">save</div>
-		  	<div v-show="displayReset" class="cursor-pointer" @click="reset(true)">reset</div>
+			
+			<div class="mt-6" v-show="displaySave"><button class="btRecord btPlay" @click="addMessage()">save</button></div>
+			<!--<div v-show="displayReset"><button class="btRecord btPlay" @click="reset(true)">reset</button></div>-->
 		  	<div v-show="displayNew" class="cursor-pointer" @click="newMessage()">new</div>
 		  </div>
 
@@ -176,9 +177,9 @@ import * as Tone from 'tone';
 import moment from 'moment';
 
 if (process.browser) {
-  var effet_1 = require('~/assets/js/ms1.js')
-  var effet_2 = require('~/assets/js/ms2.js')
-  var effet_3 = require('~/assets/js/ms3.js')
+  var effet_1 = require('~/assets/js/ms1_home.js')
+  var effet_2 = require('~/assets/js/ms2_home.js')
+  var effet_3 = require('~/assets/js/ms3_home.js')
 }
 
 var P5;
@@ -377,17 +378,24 @@ export default {
 				
 				
 				
-				this.ps = new P5(this.radar.main)
-    this.radar.setFctCanvasSize(window.innerWidth-200,900);
+				/*this.ps = new P5(this.radar.main)
+			    this.radar.setFctCanvasSize(window.innerWidth-200,900);
+			    this.radar.setDelegate(this.callbackOnP5);
+			    this.radar.setFctCanvasId(99)
+			    this.radar.setFctSound(0)
+			    console.log("couleyr : " + this.tools_color_text)
+			    this.radar.setFctTextColor(this.tools_color_text)
+			    this.radar.setFctBgColor(this.tools_color_bg)
+			    this.radar.setFctFontSize(this.tools_font_size)
+				this.radar.setFctTexte(document.querySelector('.editItem').innerHTML);*/
+				
+							this.ps = new P5(this.radar.main)
+    // NOTE: p5.jsからのコールバックを受け取る
     this.radar.setDelegate(this.callbackOnP5);
-    this.radar.setFctCanvasId(99)
     this.radar.setFctSound(0)
     console.log("couleyr : " + this.tools_color_text)
     this.radar.setFctTextColor(this.tools_color_text)
     this.radar.setFctBgColor(this.tools_color_bg)
-    this.radar.setFctFontSize(this.tools_font_size)
-    
-
 		     
 				this.radar.setFctTexte(document.querySelector('.editItem').innerHTML);
 				
@@ -763,7 +771,7 @@ export default {
 							this.isPlayer = true;
 							this.isCapture = true;
 							
-							
+							//this.initCapture();
 							
 							this.intervalDisplayMic = setInterval(() => this.displayVal(this.meter.getValue(),this.meter.getValue()), 100);
 						
@@ -808,6 +816,22 @@ export default {
 
 		    this.radar.setFctSound(this.clamp(val)/8)
 		    
+		    console.log("ISPALY : " + this.playerSound.state)
+		    
+		    if (this.id_source == 2) {
+			    if (this.playerSound.state == 'stopped') {
+				    //toto
+				    this.isRecord = false;
+				    this.isRecord = true;
+			    this.beforeRecording();
+				    //document.querySelector('.btRecord').classList.add("animate-onWait");
+				    //document.querySelector('.btRecord').innerHTML = 'record';
+	
+				    //this.displaySave = true;
+				    this.isPlaying = false;
+				    this.initCapture();
+			    }
+		    }
 		    //console.log("NEW val = " + (this.clamp(val)))
 			//effet
 		    //this.tools_font_size = (this.mesureVal * 50) / 90;
@@ -843,6 +867,7 @@ export default {
 			    
 		    }
 		    else {
+			    console.log("TOTOT")
 			    this.id_source = 2;
 					this.isRecord = false;
 			    this.isPlaying = true;
