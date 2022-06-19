@@ -43,6 +43,8 @@ export function main(_p5) {
 	stringArray = font.textToPoints(string,0, 100, fontSize, textToPointsOptions)
 	  ///console.log("stringArray : " + stringArray)
   }
+  
+  micLevel = 0;
 
   p5.draw = _ => {
   	  //microUpdate()

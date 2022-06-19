@@ -9,7 +9,9 @@ let id_canvas;
 let font;
 let fontSize;
 let mon_texte = '';
-let stringArray;
+let Ttexte;
+let stringArray = [];
+let bounds = [];
 let indexLoad;
 
 let textColor;
@@ -21,11 +23,12 @@ let delta_x = 0;
 let delta_y = 0;
 let c_width = 0;
 let c_height = 0;
+let cmp_col = 0;
+let interlignage = 20;
+let interlettrage = 10;
 
 let textToPointsOptions = {
   sampleFactor : 0.35,
-  separatePaths: true,
-  simplifyThreshold:0
 }
 
 export function main(_p5) {
@@ -46,12 +49,19 @@ export function main(_p5) {
 	  p5.textSize(fontSize);
 	  
 	  
-	stringArray = font.textToPoints(mon_texte,0, 0, fontSize, textToPointsOptions)
-	  ///console.log("stringArray : " + stringArray)
+	//stringArray = font.textToPoints(mon_texte,0, 0, fontSize, textToPointsOptions)
+	
+	//console.log("bounds : " + bounds.x + '/' + bounds.y  + '/' + bounds.w  + '/' + bounds.h)
+	for (let i = 0; i < Ttexte.length; i += 1) {
+		console.log("texte : " + Ttexte[i])
+		stringArray[i] = font.textToPoints(Ttexte[i],0, 0, fontSize, textToPointsOptions)
+		bounds[i] = font.textBounds(Ttexte[i], 0, 0, fontSize);
+		//console.log("Lettre : " + Ttexte[i]);
+  	}
   }
 
   p5.draw = _ => {
-	  notifyCurrentTime();
+	  //notifyCurrentTime();
 	  
   	  //microUpdate()
   	  
@@ -61,58 +71,75 @@ export function main(_p5) {
 	  
 	  p5.stroke(textColor)
 	  
-	  console.log("DRAW : " + textColor)
 
 	  var pos_x = 0
 	  var pos_y = 0
 	  var old_x = 0;
 	  var old_y = 0;
 	  var isLigne = false;
-	  //console.log("micLevel : " + micLevel)
-	  stringArray.forEach(
-	    (element, indexPosition) =>{
-		    //if (indexPosition < 500) {
-				//console.log("indexPosition : " +pos_x)
-				if (indexPosition == 0) {
-					old_x = element.x;
-					old_y = element.y;
-				}
-				
-				if (pos_x > 600) {
-					old_x = element.x;					
-					
-					index_y += delta_y;
-					index_x = delta_x;
-					isLigne = true;
-				}
-				
-				pos_x =  element.x - old_x;
-				pos_y = element.y - old_y;
-				
-				if (indexPosition == 0) {
-					isLigne = false;
-					
-				}
-				
-				
-				//else {
-					//pos_x += old_x - element.x;
-					//pos_y += old_y - element.y;
-				//}
-			//}
-			
-			
-			     p5.line(pos_x+index_x, pos_y+index_y, pos_x+micLevel*250+index_x, pos_y+index_y)
-				 p5.line(pos_x+index_x, pos_y+index_y, pos_x-micLevel*250+index_x, pos_y+index_y)
-				 p5.line(pos_x+index_x, pos_y+index_y, pos_x+index_x, pos_y+micLevel*250+index_y)
-				 p5.line(pos_x+index_x, pos_y+index_y, pos_x+index_x, pos_y-micLevel*250+index_y)
-		 
-	
-	
-	    }
-	  )
 	  
-	  //p5.resizeCanvas(1000, fontSize-91, true);
+	  var max_width_letter = 0;
+	  var max_height_letter = 0;
+	  
+	  for (let i = 0; i < bounds.length; i += 1) {
+		  if (bounds[i].w > max_width_letter) max_width_letter = bounds[i].w;
+		  if (bounds[i].h > max_height_letter) max_height_letter = bounds[i].h;
+	  }
+	  
+
+	  delta_x = bounds[0].w * -1;
+	  delta_y = ((max_height_letter/2) - ((fontSize*24)/100)) * -1;
+	  
+	  cmp_col = 0;
+	  var tito = 0;
+	  isLigne = false;
+	  index_x = 0;
+		for (let i = 0; i < Ttexte.length; i += 1) {
+		  cmp_col += bounds[i].w + interlettrage; 
+		  if (cmp_col > (c_width - max_width_letter)) {
+			  console.log("COUPE : " + max_height_letter + ' / ' + interlignage)
+			  old_y += max_height_letter + interlignage;	
+			  isLigne = true;	
+			  cmp_col = 0;	  
+		  }
+		  stringArray[i].forEach(
+		    (element, indexPosition) =>{
+			
+				if (indexPosition == 0) {
+					if ((i == 0) || (isLigne)) {
+						old_x = 0;
+						if (i==0) old_y = delta_y
+						isLigne = false;	
+					}
+					else {
+						old_x += bounds[i-1].w + interlettrage;
+						delta_x = element.x
+					}
+					
+					
+				}
+				else {
+					//element.x = element.x - delta_x;
+				}
+
+				
+				pos_x =  old_x + element.x;
+				pos_y = old_y + element.y;
+			//}
+		
+			 p5.line(pos_x+index_x, pos_y+index_y, pos_x+micLevel*250+index_x, pos_y+index_y)
+			 p5.line(pos_x+index_x, pos_y+index_y, pos_x-micLevel*250+index_x, pos_y+index_y)
+			 p5.line(pos_x+index_x, pos_y+index_y, pos_x+index_x, pos_y+micLevel*250+index_y)
+			 p5.line(pos_x+index_x, pos_y+index_y, pos_x+index_x, pos_y-micLevel*250+index_y)
+			 
+			 //console.log("LETTRE : " + stringArray[i])
+		    }
+		    
+		    
+		  )
+		}
+	  
+	 
   }
 }
 
@@ -155,15 +182,14 @@ function saveTO(val) {
 
 }
 
-function setTexte(val,index) {
-	console.log("CHARGE TEXTE OBJ: " + index)
-    mon_texte = val
+function setTexte(val,Tval,index) {
+    mon_texte = val;
+    Ttexte = Tval;
 	indexLoad = index;
 }
 
 function setTextColor(val)
 {
-	console.log("COLORVAL : " + val)
 	textColor = val;
 }
 
@@ -179,6 +205,16 @@ function setFontSize(val)
 	index_y = parseInt(val);
 	delta_x = 0 ;
 	delta_y = index_y;
+}
+
+function setInterlettrage(val)
+{
+	interlettrage = parseInt(val);
+}
+
+function setInterlignage(val)
+{
+	interlignage = parseInt(val);
 }
 
 function setCanvasId(id)
@@ -199,8 +235,8 @@ export function startLoopP5() {
 
 }
 
-export function setFctTexte(val,index) {
-    setTexte(val,index);
+export function setFctTexte(val,Tval,index) {
+    setTexte(val,Tval,index);
 
 }
 
@@ -227,6 +263,16 @@ export function setFctBgColor(val) {
 
 export function setFctFontSize(val) {
     setFontSize(val);
+
+}
+
+export function setFctInterlignage(val) {
+    setInterlignage(val);
+
+}
+
+export function setFctInterlettrage(val) {
+    setInterlettrage(val);
 
 }
 

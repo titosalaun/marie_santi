@@ -379,7 +379,8 @@ select:-webkit-autofill:focus {
   }
   
   .mainSpace .tools {
-	  @apply fixed left-0 top-0 mt-[5.5rem] h-screen z-0 flex justify-center  pl-6;
+	  @apply fixed left-0 top-0 mt-[5.5rem] z-0 flex justify-center  pl-6;
+	  height:calc(100vh - 5.5rem);
   }
 
   .mainSpace .tools .tools-content {
@@ -408,9 +409,16 @@ select:-webkit-autofill:focus {
   }
   
   
+  #defaultCanvas0 {
+	border:1px solid red;
+}
+  
+  
   .tools .tools-nav {
 	  @apply flex justify-center rotate-180 leading-none cursor-pointer;
 	  writing-mode: vertical-rl;
+	  margin-top: -4.5rem;
+
   }
   
   .mainSpace input[type=number],input[type=text],input[type=password],input[type=email], textarea, select {

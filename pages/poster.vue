@@ -18,16 +18,16 @@
 					  	<div class="zoneColorBg"><color-picker v-model="color_bg" @change="updateColorBg"></color-picker></div>
 				  	</div>
 				  	<div>
-					  	<label>Taille de la font : {{tools_font_size}}</label>
-					  	<input class="slider" type="range" @input="updateFontSize()" id="font_size" min="10" max="200" v-model="font_size" />
+					  	<label>Taille de la font : {{font_size}}</label>
+					  	<input class="slider" type="range" @mouseup="updateFontSize()" id="font_size" min="10" max="200" v-model="font_size" />
 				  	</div>
 				  	<div>
-					  	<label>Interlettrage : {{tools_interlettrage}}</label>
-					  	<input class="slider" type="range" @input="updateFontSize()" id="interlettrage" min="-10" max="40" v-model="interlettrage" />
+					  	<label>Interlettrage : {{interlettrage}}</label>
+					  	<input class="slider" type="range" @mouseup="updateFontSize()" id="interlettrage" min="0" max="40" v-model="interlettrage" />
 				  	</div>
 				  	<div>
-					  	<label>Interlignage : {{tools_interlignage}}</label>
-					  	<input class="slider" type="range" @input="updateFontSize()" id="interlignage" min="10" max="200" v-model="interlignage" />
+					  	<label>Interlignage : {{interlignage}}</label>
+					  	<input class="slider" type="range" @mouseup="updateFontSize()" id="interlignage" min="10" max="200" v-model="interlignage" />
 				  	</div>
 				  	<div>
 					  	<button class="cursor-pointer toGalerie" @click="exportGalerie();">Galerie</button>
@@ -140,11 +140,13 @@ export default {
 			        this.color_text = this.message.color_text;
 			        this.color_bg = this.message.color_bg;
 			        this.font_size = this.message.font_size;
+			        this.interlignage = this.message.interlignage;
+			        this.interlettrage = this.message.interlettrage;
 			        
 			        this.initTools();
 			        
 			        console.log("font_size : " + this.font_size)
-			        this.loadMessage(true,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size)
+			        this.loadMessage(true,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size,this.interlettrage,this.interlignage)
 			    }
 		   })
 	       .catch(error => {
@@ -158,12 +160,14 @@ export default {
 		    hideErreur();
 	    }
 	    ,
-		loadMessage: function(isFirst,id_message,id_effet,message,color_text,color_bg,font_size) {
+		loadMessage: function(isFirst,id_message,id_effet,message,color_text,color_bg,font_size,interlettrage,interlignage) {
 			console.log("color_text : " + color_text)
+			this.ps = null;
 			
 			if (!isFirst) {
 				document.querySelector('#p5Canvas_99').removeChild(document.querySelector('canvas'));
 			}
+			
 			this.radar = this.selectEffet(id_effet);
 			
 			this.ps = new P5(this.radar.main)
@@ -173,8 +177,9 @@ export default {
 		    this.radar.setFctTextColor(color_text)
 		    this.radar.setFctBgColor(color_bg)
 		    this.radar.setFctFontSize(font_size)
-    
-			this.radar.setFctTexte(message,0);
+		    this.radar.setFctInterlettrage(interlettrage)
+		    this.radar.setFctInterlignage(interlignage)
+			this.radar.setFctTexte(message,Array.from(message),0);
 			
 			this.isShowLoading = false;
 			document.querySelector('.canvas-area').classList.remove("hidden");
@@ -205,7 +210,7 @@ export default {
 	    ,
 	    updateColorPicker: function(isRadar) {
 		    if (isRadar) {
-			    this.loadMessage(false,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size)
+			    this.loadMessage(false,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size,this.interlettrage,this.interlignage)
 			    /*this.radar.setFctTextColor(this.color_text)
 				this.radar.setFctBgColor(this.color_bg)
 				this.radar.setFctRedraw(this.color_text);*/
@@ -285,6 +290,34 @@ export default {
 		{
 			localStorage.setItem('id_message', JSON.stringify(id_message));
 			document.location = '/'
+		}
+		,
+		updateFontSize: function()
+		{
+			this.loadMessage(false,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size,this.interlettrage,this.interlignage)
+		}
+		,
+		updateInterlignage: function()
+		{
+
+			    this.loadMessage(false,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size,this.interlettrage,this.interlignage)
+		    
+			console.log("this.interlignage : " + this.interlignage)
+			
+			//this.radar.setFctInterlignage(this.interlignage)
+			//this.radar.setFctRedraw(this.color_text)
+		}
+		,
+		updateInterlettrage: function()
+		{
+			console.log("this.interlignage : " + this.interlignage)
+			this.loadMessage(false,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size,this.interlettrage,this.interlignage)
+			    /*this.radar.setFctTextColor(this.color_text)
+				this.radar.setFctBgColor(this.color_bg)
+				this.radar.setFctRedraw(this.color_text);*/
+				//this.startP5()
+				//this.stopP5()
+
 		}
 	    		
 	}

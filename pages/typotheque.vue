@@ -58,6 +58,9 @@ if (process.browser) {
   var effet_1 = require('~/assets/js/ms1.js')
   var effet_2 = require('~/assets/js/ms2.js')
   var effet_3 = require('~/assets/js/ms3.js')
+  
+  
+  //
 }
 
 var playerSound;
@@ -321,6 +324,7 @@ export default {
 			
 			this.ps = new P5(this.radar[index].main)
 		    this.radar[index].setDelegate(this.callbackOnP5);
+		    this.radar[index].setFctCanvasSize(800,500)
 		    this.radar[index].setFctCanvasId(id_message)
 		    this.radar[index].setFctSound(0)
 		    this.radar[index].setFctTextColor(color_text)
