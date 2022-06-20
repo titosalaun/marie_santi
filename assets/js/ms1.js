@@ -12,6 +12,7 @@ let mon_texte = '';
 let Ttexte;
 let stringArray = [];
 let bounds = [];
+let erreur = [];
 let indexLoad;
 
 let textColor;
@@ -50,13 +51,22 @@ export function main(_p5) {
 	  
 	  
 	//stringArray = font.textToPoints(mon_texte,0, 0, fontSize, textToPointsOptions)
-	
+	erreur = [];
 	//console.log("bounds : " + bounds.x + '/' + bounds.y  + '/' + bounds.w  + '/' + bounds.h)
 	for (let i = 0; i < Ttexte.length; i += 1) {
+		if (Ttexte[i] == ' ') {
+			erreur[i] = 'yes';
+			Ttexte[i] = '.';
+		}
+		else erreur[i] = 'no';
+		
+		
 		console.log("texte : " + Ttexte[i])
 		stringArray[i] = font.textToPoints(Ttexte[i],0, 0, fontSize, textToPointsOptions)
 		bounds[i] = font.textBounds(Ttexte[i], 0, 0, fontSize);
-		//console.log("Lettre : " + Ttexte[i]);
+		console.log("Lettre : " + Ttexte[i] + ' / ' + bounds[i].w);
+		
+		
   	}
   }
 
@@ -93,7 +103,7 @@ export function main(_p5) {
 	  cmp_col = 0;
 	  var tito = 0;
 	  isLigne = false;
-	  index_x = 0;
+	  index_x = 10;
 		for (let i = 0; i < Ttexte.length; i += 1) {
 		  cmp_col += bounds[i].w + interlettrage; 
 		  if (cmp_col > (c_width - max_width_letter)) {
@@ -103,7 +113,12 @@ export function main(_p5) {
 			  cmp_col = 0;	  
 		  }
 		  stringArray[i].forEach(
+			  
+
 		    (element, indexPosition) =>{
+			    
+			    if (erreur[i] == 'yes') p5.stroke(bgColor)
+			  else p5.stroke(textColor)
 			
 				if (indexPosition == 0) {
 					if ((i == 0) || (isLigne)) {
@@ -163,6 +178,11 @@ function microUpdate() {
 
 
 function setSound(val) {
+    micLevel = val
+
+}
+
+function setDecibel(val) {
     micLevel = val
 
 }
@@ -293,6 +313,12 @@ export function setFctRedraw(val) {
 export function setFctSave() {
 	
     saveTO();
+
+}
+
+export function setFctDecibel(val) {
+	
+    setDecibel(val);
 
 }
 

@@ -27,7 +27,7 @@
 		  		<div v-for='(message, indexMessage) in messages' class="item" v-for-callback="{key: indexMessage, array: messages, callback: callback}">
 			  		<div class="item-content"  :id="'S_' + indexMessage">
 				  		<div @click="goHome(message.id_message)" class="message relative cursor-pointer" :style="{ 'color': message.color_text }">
-					  		 {{tito}} {{message.texte}} 
+					  		 {{formatMessage(message.texte)}} 
 					  		<div style="display:block;width: 100%;height:auto" :id="'p5Canvas_' + message.id_message" class="canvas-area"></div>
 					  	</div>
 				  		<div class="item-tools">
@@ -355,6 +355,14 @@ export default {
 		{
 			localStorage.setItem('id_message', JSON.stringify(id_message));
 			document.location = '/'
+		}
+		,
+		formatMessage: function(message) {
+			message = message.replaceAll("<br>",' ');
+			message = message.replaceAll("<div>",' ');
+			message = message.replaceAll("</div>",' ');
+			message = message.replaceAll("<br />",' ');
+			return message
 		}
 	    		
 	}

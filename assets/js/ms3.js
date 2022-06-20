@@ -1,15 +1,32 @@
 let p5;
 let delegate;
 let mic;
-let micLevel;
+let micLevel = 0;
+let canvas;
+let id_canvas;
 let font;
 let fontSize;
-let string;
-let stringArray;
-let ecart;
+let mon_texte = '';
+let Ttexte;
+let stringArray = [];
+let bounds = [];
+let indexLoad;
 
 let textColor;
 let bgColor;
+
+let index_x = 0;
+let index_y = 0;
+let delta_x = 0;
+let delta_y = 0;
+let c_width = 0;
+let c_height = 0;
+let cmp_col = 0;
+let interlignage = 20;
+let interlettrage = 10;
+let ecart;
+let string;
+
 
 let textToPointsOptions = {
 
@@ -23,7 +40,6 @@ export function main(_p5) {
    p5.preload = _ => {
     font = p5.loadFont("UniversalSansDisplayTrial491-Regular.otf");
 	  fontSize = 50;
-	  string="je m'appelle tito"
 	  
 	  fontSize = 250;
 	  ecart=250
@@ -32,46 +48,128 @@ export function main(_p5) {
   }
   
   p5.setup = _ => {
-	  console.log("WITH : " + p5.displayWidth)
-	  console.log("Height : " + p5.displayHeight)
-  	let canvas = p5.createCanvas(1000, 500);
-  	canvas.parent("p5Canvas");
+	 let canvas = p5.createCanvas(c_width, c_height);
+  	canvas.parent("p5Canvas_" + id_canvas);
 	  //microSetup(canvas)
 	  p5.textFont(font);
 	  p5.textSize(fontSize);
 	  
 	  
-	stringArray = font.textToPoints(string,0, fontSize, fontSize, textToPointsOptions)
+	//stringArray = font.textToPoints(Ttexte[0],0, fontSize, fontSize, textToPointsOptions)
+	
+	for (let i = 0; i < 1; i += 1) {
+		console.log("texte : " + Ttexte[i])
+		stringArray[i] = font.textToPoints(Ttexte[i],0, 0, fontSize, textToPointsOptions)
+		bounds[i] = font.textBounds(Ttexte[i], 0, 0, fontSize);
+  	}
+  	
 	 console.log("stringArray : " + stringArray)
   }
 
   p5.draw = _ => {
   	  //microUpdate()
-	  p5.background(bgColor);
+	   p5.background(bgColor);
+	  
+	  p5.textSize(fontSize);
+	  
 	  p5.stroke(textColor)
-		  stringArray.forEach(
+	  
+	  var pos_x = 0
+	  var pos_y = 0
+	  var old_x = 0;
+	  var old_y = 0;
+	  var isLigne = false;
+	  
+	  var max_width_letter = 0;
+	  var max_height_letter = 0;
+	  
+	  for (let i = 0; i < bounds.length; i += 1) {
+		  if (bounds[i].w > max_width_letter) max_width_letter = bounds[i].w;
+		  if (bounds[i].h > max_height_letter) max_height_letter = bounds[i].h;
+	  }
+	  
+
+	  delta_x = bounds[0].w * -1;
+	  delta_y = ((max_height_letter/2) - ((fontSize*24)/100)) * -1;
+	  
+	  cmp_col = 0;
+	  var tito = 0;
+	  isLigne = false;
+	  index_x = 0;
+		for (let i = 0; i < 1; i += 1) {
+		  cmp_col += bounds[i].w + interlettrage; 
+		  if (cmp_col > (c_width - max_width_letter)) {
+			  console.log("COUPE : " + max_height_letter + ' / ' + interlignage)
+			  old_y += max_height_letter + interlignage;	
+			  isLigne = true;	
+			  cmp_col = 0;	  
+		  }
+		  stringArray[i].forEach(
+		    (element, indexPosition) =>{
+			    let nextEl = stringArray[i][indexPosition]
+			    p5.stroke(textColor)
+	      p5.strokeWeight(1.5)
+			
+				if (indexPosition == 0) {
+					if ((i == 0) || (isLigne)) {
+						old_x = 0;
+						if (i==0) old_y = delta_y
+						isLigne = false;	
+					}
+					else {
+						old_x += bounds[i-1].w + interlettrage;
+						delta_x = element.x
+					}
+					
+					
+				}
+				else {
+					//element.x = element.x - delta_x;
+				}
+
+				
+				pos_x =  old_x + element.x;
+				pos_y = old_y + element.y;
+			//}
+
+			 p5.line(pos_x+index_x, pos_y+index_y, nextEl.x, nextEl.y)
+			 p5.stroke(textColor);
+			 p5.line(pos_x+index_x , pos_y+index_y +micLevel*ecart, nextEl.x, nextEl.y+ micLevel*ecart)
+			 p5.line(pos_x+index_x , pos_y+index_y -micLevel*ecart, nextEl.x, nextEl.y- micLevel*ecart)
+		
+		}
+		    
+		    
+		  )
+		}
+		
+		
+		  /*stringArray[0].forEach(
 	    (element, indexPosition) =>{
-	      //Effet avec des cercles
-	      let nextEl = stringArray[indexPosition]
+	      let nextEl = stringArray[0][indexPosition]
 	     p5.stroke(textColor)
 	      p5.strokeWeight(1.5)
-	      
-	      if (micLevel == 'undefined') micLevel = 0;
-	  if (micLevel == '') micLevel = 0;
-	       
+
 	
 	      p5.line(element.x, element.y, nextEl.x, nextEl.y)
 	      
-	p5.stroke(textColor);
+		  p5.stroke(textColor);
 	
-	                  p5.line(element.x , element.y +micLevel*ecart, nextEl.x, nextEl.y+ micLevel*ecart)
+	      p5.line(element.x , element.y +micLevel*ecart, nextEl.x, nextEl.y+ micLevel*ecart)
 	      
-	                        p5.line(element.x , element.y -micLevel*ecart, nextEl.x, nextEl.y- micLevel*ecart)
+	      p5.line(element.x , element.y -micLevel*ecart, nextEl.x, nextEl.y- micLevel*ecart)
 	
 	
 	    }
-	  )
+	  )*/
   }
+}
+
+function Redraw(textColor) {
+  //p5.resizeCanvas(c_width, c_height);
+  console.log("REDRAW")
+  p5.stroke(textColor)
+  p5.redraw();
 }
 
 function microSetup(canvas) {
@@ -85,16 +183,13 @@ function microUpdate() {
 
 }
 
-function notifyCurrentTime() {
-  if (delegate !== undefined) {
-    const message = p5.hour() + ":" + p5.minute() + ":" + p5.second();
-
-    delegate(message);
-  }
-  
-}
 
 function setSound(val) {
+    micLevel = val
+
+}
+
+function setDecibel(val) {
     micLevel = val
 
 }
@@ -109,27 +204,56 @@ function stopP5() {
 
 }
 
-function setTexte(val) {
-	console.log("CHARGE TEXTE")
-    string = val
+function saveTO(val) {
+    p5.saveCanvas('myCanvas', 'jpg');
 
+}
+
+function setTexte(val,Tval,index) {
+    mon_texte = val;
+    Ttexte = Tval;
+	indexLoad = index;
 }
 
 function setTextColor(val)
 {
-	console.log("CHARGE textColor : " + val)
 	textColor = val;
 }
 
 function setBgColor(val)
 {
-	console.log("CHARGE bgColor : " + val)
 	bgColor = val;
 }
 
 function setFontSize(val)
 {
-	console.log("SIZE : " + val)
+	fontSize = parseInt(val);
+	index_x = parseInt(val/2);
+	index_y = parseInt(val);
+	delta_x = 0 ;
+	delta_y = index_y;
+}
+
+function setInterlettrage(val)
+{
+	interlettrage = parseInt(val);
+}
+
+function setInterlignage(val)
+{
+	interlignage = parseInt(val);
+}
+
+function setCanvasId(id)
+{
+	id_canvas = id;
+	
+}
+
+function setCanvasSize(w_width,w_height)
+{
+	c_width = w_width;
+	c_height = w_height;
 }
 
 
@@ -138,8 +262,8 @@ export function startLoopP5() {
 
 }
 
-export function setFctTexte(val) {
-    setTexte(val);
+export function setFctTexte(val,Tval,index) {
+    setTexte(val,Tval,index);
 
 }
 
@@ -154,6 +278,7 @@ export function stopLoopP5() {
 }
 
 export function setFctTextColor(val) {
+	
     setTextColor(val);
 
 }
@@ -168,7 +293,56 @@ export function setFctFontSize(val) {
 
 }
 
+export function setFctInterlignage(val) {
+    setInterlignage(val);
+
+}
+
+export function setFctInterlettrage(val) {
+    setInterlettrage(val);
+
+}
+
+export function setFctCanvasId(id) {
+    setCanvasId(id);
+}
+
+export function setFctCanvasSize(w_width,w_height) {
+    setCanvasSize(w_width,w_height);
+}
+
+export function setFctRedraw(val) {
+	
+    Redraw(val);
+
+}
+
+export function setFctSave() {
+	
+    saveTO();
+
+}
+
+export function setFctDecibel(val) {
+	
+    setDecibel(val);
+
+}
+
+
+
+
+
+
 export function setDelegate(_delegate) {
   delegate = _delegate;
+}
+
+function notifyCurrentTime() {
+  if (delegate !== undefined) {
+    const message = p5.hour() + ":" + p5.minute() + ":" + p5.second();
+
+    delegate(message);
+  }
 }
 

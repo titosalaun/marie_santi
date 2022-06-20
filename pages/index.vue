@@ -72,7 +72,7 @@
 		  	<div id="content"></div>
 		  	<div class="col-content-list">
 			  		<div class="item" style="display:block">
-				  		<div @click="clickEdit"  @input="clickEdit" ref="editItem" class="editItem" contenteditable v-html="messageInit"></div>
+				  		<div @click="clickEdit"  @input="clickEdit" ref="editItem" class="editItem bigBefore" contenteditable v-html="messageInit"></div>
 				  		<div style="display:block;width: 100%;height:auto" id="p5Canvas_99" class="canvas-area hidden"></div>
 			  		</div>
 		  	</div>
@@ -88,15 +88,15 @@
 			</div>
 		  	<!--<div v-show="displayStart" class="startMic cursor-pointer" @click="startCapture()">start</div>-->
 		  	<div v-show="displayRecord"><button class="btRecord" @click="beforeRecording"  @mouseover="recordOver = true" @mouseleave="recordOver = false" v-bind:class="{ 'animate-onWait': !recordOver }">record</button>
-					  					  	<div class="pt-3 text-sm">{{displayActiveSound}}</div>
+					<div v-show="displayActiveSound != ''" class="pt-3 text-sm">{{displayActiveSound}}</div>
 
 				  	</div>
 				  	
-				  	<div v-show="id_message != 0"><button class="btRecord btPlay" @click="playMessage">play</button>
-
-				  	</div>
+				  	<div v-show="id_message != 0"><button class="btRecord btPlay" @click="playMessage">play</button></div>
+				  	
+				  	<div  v-show="displaySave"><button class="btRecord btPlay" @click="addMessage()">save</button></div>
 			
-			<div class="mt-6" v-show="displaySave"><button class="btRecord btPlay" @click="addMessage()">save</button></div>
+			
 			<!--<div v-show="displayReset"><button class="btRecord btPlay" @click="reset(true)">reset</button></div>-->
 		  	<div v-show="displayNew" class="cursor-pointer" @click="newMessage()">new</div>
 		  </div>
@@ -107,7 +107,7 @@
 		<div id="defaultModalFile" tabindex="1" @keydown.esc="displayAddSound(0)" class="modalZone hidden overflow-y-auto overflow-x-hidden bg-mainBg/50 flex fixed right-0 left-0 top-4 z-50 justify-center items-center md:h-full md:inset-0">
 		    <div class="relative px-6 w-full max-w-2xl h-full md:h-auto">
 		        <!-- Modal content -->
-		        <div class="relative bg-mainBg p-6 border">
+		        <div class="relative  p-6 border">
 		            <!-- Modal header -->
 		            <div class="flex justify-between items-start border-b ">
 			             <h1>Sons</h1>
@@ -228,7 +228,7 @@ export default {
 			isDeviceInitialize:false,
 			
 			message:'',
-			messageInit:'ABCDEFGHIJKLMN<br />OPQRSTUVWXYZ<br />abcdefghijkl\nmnopqrstuvwxyz<br />0123456789ABCDEFGHIJKLMN<br />OPQRSTUVWXYZ\nabcdefghijkl<br />mnopqrstuvwxyz<br />0123456789',
+			messageInit:'LES LIGATURES MUTENT EN REGARD DES STYLES D’ÉCRITURE, PROLIFÈRENT PUIS INVESTISSENT LES CASSES TYPOGRAPHIQUES. CERTAINES, PASSÉES À LA POSTÉRITÉ, EUVRENT ENCORE EN CATIMINI DANS LES FAMILLES DE CARACTÈRES NUMÉRIQUES TANDIS QUE D’AUTRES EN ASSURENT LE LEITMOTIV',
 			id_source:1,
 			isBegin:false,
 			displayStart:false,
@@ -392,12 +392,19 @@ export default {
 							this.ps = new P5(this.radar.main)
     // NOTE: p5.jsからのコールバックを受け取る
     this.radar.setDelegate(this.callbackOnP5);
+    var p_width = document.querySelector('.col-content-list').clientWidth
+    console.log("p_width : " + p_width)
+    this.radar.setFctCanvasSize(p_width, 500);
     this.radar.setFctSound(0)
     console.log("couleyr : " + this.tools_color_text)
     this.radar.setFctTextColor(this.tools_color_text)
     this.radar.setFctBgColor(this.tools_color_bg)
-		     
-				this.radar.setFctTexte(document.querySelector('.editItem').innerHTML);
+		     var le_texte = document.querySelector('.editItem').innerHTML;
+		     le_texte = le_texte.replaceAll("<div>","");
+		     le_texte = le_texte.replaceAll("</div>","");
+		     le_texte = le_texte.replaceAll("<br />","");
+		     le_texte = le_texte.replaceAll("<br>","");
+				this.radar.setFctTexte(le_texte);
 				
 				this.startP5();
 				
@@ -440,6 +447,7 @@ export default {
 			 	this.date_creation = moment().format('YYYY-MM-DD HH:mm:ss');//moment(this.date_interview).format('YYYY-MM-DD');
 			 	
 				var base64 = this.resultSound;
+				
 
 				let formData = new FormData();
 				formData.append('soundBlob', base64) ;
@@ -451,7 +459,7 @@ export default {
 				formData.append('font_size', this.tools_font_size) ;
 				formData.append('interlignage', this.tools_interlignage) ;
 				formData.append('interlettrage', this.tools_interlettrage) ;
-				formData.append('texte', this.message) ;
+				formData.append('texte', this.formatMessage(this.message)) ;
 				formData.append('duree', this.mesureTps) ;
 				formData.append('date_creation', this.date_creation) ;
 				formData.append('isNew', this.isNewMessage) ;
@@ -543,6 +551,7 @@ export default {
 				    e.target.innerHTML = '';
 				    this.message = '';
 				    this.messageInit = '';
+				    document.querySelector('.editItem').classList.remove("bigBefore");
 				    this.isBegin = true;
 				}
 							
@@ -551,6 +560,7 @@ export default {
 					this.displaySave = false;
 					this.displayReset = true;
 					this.displayRecord = true;
+					document.querySelector('.editItem').classList.remove("bigBefore");
 				}
 				else {
 					if (this.message == '') {
@@ -1070,6 +1080,14 @@ export default {
 		{
 			localStorage.setItem('id_message', JSON.stringify(id_message));
 			document.location = '/'
+		}
+		,
+		formatMessage: function(message) {
+			message = message.replaceAll("<br>",' ');
+			message = message.replaceAll("<div>",' ');
+			message = message.replaceAll("</div>",' ');
+			message = message.replaceAll("<br />",' ');
+			return message
 		}
 		
 	}

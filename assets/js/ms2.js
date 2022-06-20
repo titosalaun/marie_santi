@@ -2,13 +2,35 @@ let p5;
 let delegate;
 let mic;
 let micLevel;
+let canvas;
+let id_canvas;
+let font;
+let fontSize;
+let mon_texte = '';
+let Ttexte;
+let stringArray = [];
+let bounds = [];
+let indexLoad;
+
+let textColor;
+let bgColor;
+
+let index_x = 0;
+let index_y = 0;
+let delta_x = 0;
+let delta_y = 0;
+let c_width = 0;
+let c_height = 0;
+let cmp_col = 0;
+let interlignage = 20;
+let interlettrage = 10;
+
+
+
+
 let ecart;
 let deg;
 
-let font;
-let fontSize;
-let string;
-let stringArray;
 
 let grain = [];
 let point_x_max;
@@ -20,8 +42,7 @@ let point_y_min;
 let point_y;
 let point_y_direction;
 
-let textColor;
-let bgColor;
+let string;
 
 let textToPointsOptions = {
   sampleFactor : 0.35,
@@ -52,10 +73,8 @@ export function main(_p5) {
   }
   
   p5.setup = _ => {
-	  console.log("WITH : " + p5.displayWidth)
-	  console.log("Height : " + p5.displayHeight)
-  	let canvas = p5.createCanvas(1000, 500);
-  	canvas.parent("p5Canvas");
+	  let canvas = p5.createCanvas(c_width, c_height);
+  	canvas.parent("p5Canvas_" + id_canvas);
 	  //microSetup(canvas)
 	  p5.textFont(font);
 	  p5.textSize(fontSize);
@@ -117,6 +136,13 @@ export function main(_p5) {
   }
 }
 
+function Redraw(textColor) {
+  //p5.resizeCanvas(c_width, c_height);
+  console.log("REDRAW")
+  p5.stroke(textColor)
+  p5.redraw();
+}
+
 function microSetup(canvas) {
   canvas.mousePressed(p5.userStartAudio())
   mic = new P5.AudioIn();
@@ -128,16 +154,13 @@ function microUpdate() {
 
 }
 
-function notifyCurrentTime() {
-  if (delegate !== undefined) {
-    const message = p5.hour() + ":" + p5.minute() + ":" + p5.second();
-
-    delegate(message);
-  }
-  
-}
 
 function setSound(val) {
+    micLevel = val
+
+}
+
+function setDecibel(val) {
     micLevel = val
 
 }
@@ -152,27 +175,56 @@ function stopP5() {
 
 }
 
-function setTexte(val) {
-	console.log("CHARGE TEXTE")
-    string = val
+function saveTO(val) {
+    p5.saveCanvas('myCanvas', 'jpg');
 
+}
+
+function setTexte(val,Tval,index) {
+    mon_texte = val;
+    Ttexte = Tval;
+	indexLoad = index;
 }
 
 function setTextColor(val)
 {
-	console.log("CHARGE textColor : " + val)
 	textColor = val;
 }
 
 function setBgColor(val)
 {
-	console.log("CHARGE bgColor : " + val)
 	bgColor = val;
 }
 
 function setFontSize(val)
 {
-	console.log("SIZE : " + val)
+	fontSize = parseInt(val);
+	index_x = parseInt(val/2);
+	index_y = parseInt(val);
+	delta_x = 0 ;
+	delta_y = index_y;
+}
+
+function setInterlettrage(val)
+{
+	interlettrage = parseInt(val);
+}
+
+function setInterlignage(val)
+{
+	interlignage = parseInt(val);
+}
+
+function setCanvasId(id)
+{
+	id_canvas = id;
+	
+}
+
+function setCanvasSize(w_width,w_height)
+{
+	c_width = w_width;
+	c_height = w_height;
 }
 
 
@@ -181,8 +233,8 @@ export function startLoopP5() {
 
 }
 
-export function setFctTexte(val) {
-    setTexte(val);
+export function setFctTexte(val,Tval,index) {
+    setTexte(val,Tval,index);
 
 }
 
@@ -197,6 +249,7 @@ export function stopLoopP5() {
 }
 
 export function setFctTextColor(val) {
+	
     setTextColor(val);
 
 }
@@ -211,7 +264,58 @@ export function setFctFontSize(val) {
 
 }
 
+export function setFctInterlignage(val) {
+    setInterlignage(val);
+
+}
+
+export function setFctInterlettrage(val) {
+    setInterlettrage(val);
+
+}
+
+export function setFctCanvasId(id) {
+    setCanvasId(id);
+}
+
+export function setFctCanvasSize(w_width,w_height) {
+    setCanvasSize(w_width,w_height);
+}
+
+export function setFctRedraw(val) {
+	
+    Redraw(val);
+
+}
+
+export function setFctSave() {
+	
+    saveTO();
+
+}
+
+export function setFctDecibel(val) {
+	
+    setDecibel(val);
+
+}
+
+
+
+
+
+
 export function setDelegate(_delegate) {
   delegate = _delegate;
 }
+
+function notifyCurrentTime() {
+  if (delegate !== undefined) {
+    const message = p5.hour() + ":" + p5.minute() + ":" + p5.second();
+
+    delegate(message);
+  }
+}
+
+
 

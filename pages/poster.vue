@@ -30,6 +30,13 @@
 					  	<input class="slider" type="range" @mouseup="updateFontSize()" id="interlignage" min="10" max="200" v-model="interlignage" />
 				  	</div>
 				  	<div>
+					  	<label>Décibels : {{decibel}}</label>
+					  	<input class="slider" type="range" @mouseup="updateFontSize()" step="0.0001" id="decibel" min="-0.1" max="0" v-model="decibel" />
+				  	</div>
+				  	<div>
+					  	<button class="cursor-pointer toGalerie" @click="playSound();">Play</button>
+				  	</div>
+				  	<div>
 					  	<button class="cursor-pointer toGalerie" @click="exportGalerie();">Galerie</button>
 				  	</div>
 				  	<div>
@@ -91,6 +98,7 @@ export default {
 	 this.getMessage();
 	 
 	 playerSound = new Tone.Player().toDestination();
+	 this.meter = new Tone.Meter({});
 	 
 	 this.initDisplayErreur();
 	 
@@ -124,6 +132,12 @@ export default {
 			interlettrage:'',
 			isTools:true,
 			timeOutTools:0,
+			decibel: 0,
+			meter:'',
+			isPlayer:false,
+			intervalDisplayMic:'',
+			mesureVal:0,
+			mesureTps:0,
 	    }
 	  
   },
@@ -145,8 +159,10 @@ export default {
 			        
 			        this.initTools();
 			        
+			        this.loadSound('/upload/message_' + this.id_message + '.webm');
+			        
 			        console.log("font_size : " + this.font_size)
-			        this.loadMessage(true,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size,this.interlettrage,this.interlignage)
+			        this.loadMessage(true,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size,this.interlettrage,this.interlignage, this.decibel)
 			    }
 		   })
 	       .catch(error => {
@@ -160,7 +176,7 @@ export default {
 		    hideErreur();
 	    }
 	    ,
-		loadMessage: function(isFirst,id_message,id_effet,message,color_text,color_bg,font_size,interlettrage,interlignage) {
+		loadMessage: function(isFirst,id_message,id_effet,message,color_text,color_bg,font_size,interlettrage,interlignage,decibel) {
 			console.log("color_text : " + color_text)
 			this.ps = null;
 			
@@ -179,7 +195,14 @@ export default {
 		    this.radar.setFctFontSize(font_size)
 		    this.radar.setFctInterlettrage(interlettrage)
 		    this.radar.setFctInterlignage(interlignage)
+		    
+		    message  = message.replaceAll('&nbsp;',' ');
+		    message  = message.replaceAll('\r','.');
+		    //message  = message.replace(' ','.');
 			this.radar.setFctTexte(message,Array.from(message),0);
+			this.radar.setFctDecibel(decibel);
+			
+			
 			
 			this.isShowLoading = false;
 			document.querySelector('.canvas-area').classList.remove("hidden");
@@ -210,7 +233,7 @@ export default {
 	    ,
 	    updateColorPicker: function(isRadar) {
 		    if (isRadar) {
-			    this.loadMessage(false,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size,this.interlettrage,this.interlignage)
+			    this.loadMessage(false,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size,this.interlettrage,this.interlignage,this.decibel)
 			    /*this.radar.setFctTextColor(this.color_text)
 				this.radar.setFctBgColor(this.color_bg)
 				this.radar.setFctRedraw(this.color_text);*/
@@ -294,13 +317,13 @@ export default {
 		,
 		updateFontSize: function()
 		{
-			this.loadMessage(false,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size,this.interlettrage,this.interlignage)
+			this.loadMessage(false,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size,this.interlettrage,this.interlignage, this.decibel)
 		}
 		,
 		updateInterlignage: function()
 		{
 
-			    this.loadMessage(false,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size,this.interlettrage,this.interlignage)
+			    this.loadMessage(false,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size,this.interlettrage,this.interlignage, this.decibel)
 		    
 			console.log("this.interlignage : " + this.interlignage)
 			
@@ -311,13 +334,83 @@ export default {
 		updateInterlettrage: function()
 		{
 			console.log("this.interlignage : " + this.interlignage)
-			this.loadMessage(false,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size,this.interlettrage,this.interlignage)
+			this.loadMessage(false,this.id_message,this.id_effet,this.texte,this.color_text,this.color_bg,this.font_size,this.interlettrage,this.interlignage, this.decibel)
 			    /*this.radar.setFctTextColor(this.color_text)
 				this.radar.setFctBgColor(this.color_bg)
 				this.radar.setFctRedraw(this.color_text);*/
 				//this.startP5()
 				//this.stopP5()
 
+		}
+		,
+		loadSound(file)
+		{
+
+			bufferSound = new Tone.ToneAudioBuffer({
+				onload: () => {
+					
+				},
+				onerror: () => {
+					displayErreur("Erreur lors du chargemennt du son associé au poster")
+				},
+				reverse: false,
+				url: file,
+			});
+
+			
+		}
+	    ,
+	    playSound() {
+		    clearInterval(this.intervalDisplayMic);
+		    
+		    playerSound.buffer = bufferSound;
+			playerSound.start();
+			
+			playerSound.connect(this.meter);
+			this.isPlayer = true;
+			Tone.Transport.start();
+			this.startP5()
+			this.intervalDisplayMic = setInterval(() => this.displayVal(this.meter.getValue(),this.meter.getValue()), 100);
+	    }
+	    ,
+	    displayVal: function(val,val1) {
+		    this.index++;
+		    
+		    //const dBFS = this.meter.getLevel();
+			val = val;
+			
+			const lowerBound = 0;
+			const upperBound = 100;
+			
+			//console.log("val = " + val)
+			//console.log("val1 = " + val1)
+			
+			val = parseInt(val) + 100;
+
+		    this.mesureVal =  val;
+		    
+		    
+		    this.mesureTps = this.convertSoundDuration(Tone.Transport.getSecondsAtTime());
+
+		    this.radar.setFctSound(this.clamp(val)/8)
+		    		    
+		    if (playerSound.state == 'stopped') {
+				    this.isPlaying = false;
+				    this.stopP5()
+				    this.radar.setFctSound(0)
+			    }
+
+		}
+		,
+	    clamp: function(value) {
+		    return (0.0079 * value) + 0.001;
+		   //return Math.min(max, Math.max(min, value));
+		}
+		,
+		convertSoundDuration(sec)
+		{
+			var val = (sec / 60).toFixed(2);
+			return val.toString().replace(".",":")
 		}
 	    		
 	}

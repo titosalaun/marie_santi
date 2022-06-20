@@ -162,7 +162,7 @@ export default{
 	  	 stroke:var(--style_color_bg);
   	}
   	
-  	.editItem {
+  	.editItem, textarea {
 	   color: var(--style_color_text);
 	   font-size: var(--tools_font_size)px;
 	   line-height: var(--tools_interlignage)px;
@@ -187,12 +187,30 @@ export default{
   	}
   	
   	#defaultModalFile > div > div {
+	 background-color: var(--style_color_bg) !important;
+  	}
+  	
+  	#defaultModalFile > div > div {
 	  	border-color: var(--style_color_text);
   	}
   	
   	.form-container .bt-upload, .form-container .progress {
 	  	border-color: var(--style_color_text);
   	}
+  	
+  	textarea {
+	  	border-color: var(--style_color_bg) !important;
+  	}
+  	
+  	textarea:focus {
+	   color: var(--style_color_text);
+	  background-color: var(--style_color_bg) !important;
+	  border-color: var(--style_color_bg) !important;
+	  outline:none;
+		outline-color:var(--style_color_bg) !important;
+		outline-border:0px;
+  	}
+
   	
   	.form-container .bt-upload:focus {
 	   color: var(--style_color_text);

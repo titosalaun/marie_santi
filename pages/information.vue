@@ -17,9 +17,7 @@
 		  </div>
 		  
 		  <div class="col-content" v-bind:class="{ marge: isTools }">
-		  	<div class="texte">
-
-			  	Le projet Ampersound vise à traduire visuellement le son via  la typographie. Grâce à cette plateforme conçue comme un outil de création, chaque son peut être retranscrit graphiquement sous forme de posters animés.
+		  	<div class="texte">Le projet Ampersound vise à traduire visuellement le son via la typographie. Grâce à cette plateforme conçue comme un outil de création, chaque son peut être retranscrit graphiquement sous forme de posters animés.
 			  	
 		  	</div>
 		  			  	

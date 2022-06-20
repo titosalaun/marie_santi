@@ -10,6 +10,9 @@ let fontSize;
 let string;
 let stringArray;
 
+let c_width = 0;
+let c_height = 0;
+
 let grain = [];
 let point_x_max;
 let point_x_min;
@@ -54,7 +57,7 @@ export function main(_p5) {
   p5.setup = _ => {
 	  console.log("WITH : " + p5.displayWidth)
 	  console.log("Height : " + p5.displayHeight)
-  	let canvas = p5.createCanvas(800, 500);
+  	let canvas = p5.createCanvas(c_width, c_height);
   	canvas.parent("p5Canvas_99");
 	  //microSetup(canvas)
 	  p5.textFont(font);
@@ -127,6 +130,13 @@ function microUpdate() {
     micLevel = mic.getLevel()
 
 }
+
+function setCanvasSize(w_width,w_height)
+{
+	c_width = w_width;
+	c_height = w_height;
+}
+
 
 function notifyCurrentTime() {
   if (delegate !== undefined) {
@@ -209,6 +219,9 @@ export function setFctBgColor(val) {
 export function setFctFontSize(val) {
     setFontSize(val);
 
+}
+export function setFctCanvasSize(w_width,w_height) {
+    setCanvasSize(w_width,w_height);
 }
 
 export function setDelegate(_delegate) {

@@ -51,7 +51,7 @@ select:-webkit-autofill:focus {
   
   
   a.nav-link.nuxt-link-active {
-	  @apply underline !important;
+	  /*@apply underline !important;*/
   }
   
   
@@ -227,7 +227,7 @@ select:-webkit-autofill:focus {
   }
   
   .mainSpace header {
-	  @apply fixed w-[calc(100%-7rem)]  left-[7rem] top-0 flex items-center p-5 pl-0 pt-[1.875rem] z-40;
+	  @apply fixed w-[calc(100%-7rem)]  left-[7rem] top-0 flex items-center p-5 pl-0 pt-[2rem] z-40;
   }
   
   .mainSpace header .logo {
@@ -260,7 +260,7 @@ select:-webkit-autofill:focus {
   }
 
   .mainSpace .container .content .col-right {
-	 @apply text-right pt-[4.5rem];
+	 @apply text-right pt-[6rem];
   }
   
    .mainSpace .container .content .col-right > div {
@@ -268,7 +268,7 @@ select:-webkit-autofill:focus {
   }
   
   .mainSpace .container .content .col-content {
-	 @apply w-full pt-[4.5rem];
+	 @apply w-full pt-[6rem];
   }
   
   .mainSpace .container .content .col-content.marge {
@@ -348,9 +348,14 @@ select:-webkit-autofill:focus {
   }
 
   .mainSpace .container .content .col-content .col-content-list .item .item-content .message {
-	  @apply flex-1;
-	  font-size:50px;
-	  line-height:52px;
+	  @apply flex-1 pr-3;
+	  font-size:100px;
+	  line-height:102px;
+  }
+  
+  .bigBefore {
+	  font-size:100px !important;
+	  line-height:102px !important;
   }
   
   .mainSpace .container .content .col-content .col-content-list .item .item-content .zonePlay {
@@ -371,7 +376,7 @@ select:-webkit-autofill:focus {
   
   .mainSpace .container .content .col-content .col-content-list .editItem {
 	  @apply w-full;
-	  /*font-feature-settings: "ss02" 1;*/
+	font-feature-settings: "dlig" 1;
   }
 
   .indice {
@@ -379,8 +384,8 @@ select:-webkit-autofill:focus {
   }
   
   .mainSpace .tools {
-	  @apply fixed left-0 top-0 mt-[5.5rem] z-0 flex justify-center  pl-6;
-	  height:calc(100vh - 5.5rem);
+	  @apply fixed left-0 top-0 mt-[7rem] z-0 flex justify-center  pl-6;
+	  height:calc(100vh - 7rem);
   }
 
   .mainSpace .tools .tools-content {
@@ -400,17 +405,23 @@ select:-webkit-autofill:focus {
   }
   
   .mainSpace .texte {
-	  font-size:78px;
-	  line-height: 80px;
+	  font-size:100px;
+	  line-height: 102px;
+	  font-feature-settings: "dlig" 1;
+	  margin-left:-3px;
   }
   
   .mainSpace {
 	  @apply  cursor-pointer;
   }
   
+  #defaultModalFile > div > div {
+	  @apply bg-mainBg;
+  }
+  
   
   #defaultCanvas0 {
-	border:1px solid red;
+	border:1px solid #1767e7;
 }
   
   
@@ -450,7 +461,9 @@ select:-webkit-autofill:focus {
 	  @apply opacity-100 blur;
   }
   
-  
+  textarea {
+	  height:400px;
+  }
   
   .form-login  {
 	  @apply h-full;
@@ -466,10 +479,10 @@ select:-webkit-autofill:focus {
   }
   
   .form-login h1 .logoContainer .logo {
-	  @apply mr-8;
 	  font-size:18px;
 	  line-height: 20px;
   }
+
   
   .form-login h1 {
 	  @apply flex justify-center w-full;
@@ -484,7 +497,7 @@ select:-webkit-autofill:focus {
   
    .logo svg {
 	
-  	height: 30px;
+  	height: 47px;
   	width:auto;
   }
   
