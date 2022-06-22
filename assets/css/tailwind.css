@@ -418,11 +418,7 @@ select:-webkit-autofill:focus {
   #defaultModalFile > div > div {
 	  @apply bg-mainBg;
   }
-  
-  
-  #defaultCanvas0 {
-	border:1px solid #1767e7;
-}
+
   
   
   .tools .tools-nav {

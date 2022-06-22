@@ -652,9 +652,27 @@ export default {
 	    ,
 	    loadParametres: function() {
 		    var para = this.parametres;
-		    console.log("tito color : " + para.color_text)
-		    this.tools_color_text = para.color_text;
-		    this.tools_color_bg = para.color_bg;
+		    
+		    if (typeof para.color_text === 'undefined') {
+			    
+			    var para = new Object();
+		  		para.color_text = '#ffffff';
+		  		para.color_bg = '#000';
+		    
+		  		this.parametres = para;
+		    
+		  		localStorage.setItem('parametres', JSON.stringify(this.parametres));
+			    this.tools_color_text = "#fff";
+				this.tools_color_bg = "#000";
+
+		    }
+		    else {
+			    console.log("la")
+			    console.log("tito color : " + para.color_text)
+				this.tools_color_text = para.color_text;
+				this.tools_color_bg = para.color_bg;
+		    }
+		    
 		    		    
 		    this.initTools();
 

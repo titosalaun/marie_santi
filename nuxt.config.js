@@ -65,8 +65,8 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-	 baseURL: 'http://localhost:4003',
-	 //baseURL: 'https://api-ampersound.onoci.net',
+	 //baseURL: 'http://localhost:4003',
+	 baseURL: 'https://api-ampersound.onoci.net',
 	 proxyHeaders: true,
     credentials: false
   },

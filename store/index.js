@@ -9,8 +9,8 @@ export const getters = {
 }
 
 export const state = () => ({
-	url_server: 'http://localhost:4003',
-	//url_server: 'https://api-ampersound.onoci.net',
+	//url_server: 'http://localhost:4003',
+	url_server: 'https://api-ampersound.onoci.net',
 	isEn:false,
 })
 

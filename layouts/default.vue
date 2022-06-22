@@ -19,6 +19,8 @@ export default{
     watch: {
         color_text: {
             handler(newValue) {
+	            if (typeof newValue === 'undefined') newValue = '#fff';
+	            if (typeof this.color_bg === 'undefined') this.color_bg = '#000';
 	            this.updateParametres(newValue,this.color_bg);
 	             console.log("colorTexte : " + newValue)
             }, deep: true
@@ -26,6 +28,8 @@ export default{
         ,
         color_bg: {
             handler(newValue) {
+	             if (typeof newValue === 'undefined') newValue = '#000';
+	             if (typeof this.color_text === 'undefined') this.color_text = '#fff';
 	            this.updateParametres(this.color_text,newValue);
 	             console.log("bgTexte : " + this.newValue)
             }, deep: true
