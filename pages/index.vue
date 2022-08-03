@@ -175,6 +175,7 @@ import { mapGetters } from 'vuex';
 import axios from 'axios';
 import * as Tone from 'tone';
 import moment from 'moment';
+var gainToDecibels = require('decibels/from-gain')
 
 if (process.browser) {
   var effet_1 = require('~/assets/js/ms1_home.js')
@@ -702,7 +703,7 @@ export default {
 	    }
 	    ,
 	    initDevice: function() {
-		    this.meter = new Tone.Meter({});
+		    this.meter = new Tone.Meter({normalRange:true});
 			this.mic = new Tone.UserMedia();
 			this.recorder = new Tone.Recorder();
 			this.playerSound = new Tone.Player().toDestination();
@@ -835,14 +836,16 @@ export default {
 			//console.log("val = " + val)
 			//console.log("val1 = " + val1)
 			
-			val = parseInt(val) + 100;
+			//val = parseInt(val) + 100;
+			var decibel = (100 - gainToDecibels(val)*-1) - 10;
+			//decibel = parseInt(decibel) +;
 
-		    this.mesureVal =  val;
+		    this.mesureVal =  decibel.toFixed(2);
 		    
 		    
 		    this.mesureTps = this.convertSoundDuration(Tone.Transport.getSecondsAtTime());
 
-		    this.radar.setFctSound(this.clamp(val)/8)
+		    this.radar.setFctSound(val)
 		    
 		    console.log("ISPALY : " + this.playerSound.state)
 		    

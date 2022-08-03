@@ -66,6 +66,7 @@ import { mapGetters } from 'vuex';
 import axios from 'axios';
 import * as Tone from 'tone';
 import moment from 'moment';
+var gainToDecibels = require('decibels/from-gain')
 
 var P5;
 
@@ -98,7 +99,7 @@ export default {
 	 this.getMessage();
 	 
 	 playerSound = new Tone.Player().toDestination();
-	 this.meter = new Tone.Meter({});
+	 this.meter = new Tone.Meter({normalRange:true});
 	 
 	 this.initDisplayErreur();
 	 
@@ -385,14 +386,15 @@ export default {
 			//console.log("val = " + val)
 			//console.log("val1 = " + val1)
 			
-			val = parseInt(val) + 100;
+			//val = parseInt(val) + 100;
 
-		    this.mesureVal =  val;
+			var decibel = (100 - gainToDecibels(val)*-1) - 10;
+		    this.mesureVal =  decibel.toFixed(2);;
 		    
 		    
 		    this.mesureTps = this.convertSoundDuration(Tone.Transport.getSecondsAtTime());
 
-		    this.radar.setFctSound(this.clamp(val)/8)
+		    this.radar.setFctSound(val)
 		    		    
 		    if (playerSound.state == 'stopped') {
 				    this.isPlaying = false;
